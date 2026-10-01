@@ -1,18 +1,27 @@
 #!/bin/bash
 
 # Check for right number of arguments, print usage text if wrong
-if [[ $# -ne 4 ]]
+if [[ $# -ne 3 ]] # CHANGED
 then
   echo "[Usage]: ./main_loop.sh [container name] [profile] [mitm config file] [mitm process name]"
   exit 1
 fi
 
-./recycling.sh $1 $4   # Delete container/MITM if still running
+./recycling.sh $1 $3   # Delete container/MITM if still running
+
+# CHANGED
+PROFILES=("profile-01" "profile-02" "profile-03" "profile-04")
 
 while true
 do
-
-  ./creation.sh $1 $2 $3 $4
+  # CHANGED
+  RANDOM_INDEX=$((RANDOM \%${#PROFILES[@]}))
+  SELECTED_PROFILE=${PROFILES[$RANDOM_INDEX]}
+  
+  echo "Launching with randomized profile $SELECTED_PROFILE"
+  
+  # CHANGED
+  ./creation.sh $1 $SELECTED_PROFILE $2 $3
   sleep 3
 
   num_users=`lxc exec $1 -- sudo cat /etc/passwd | wc -l`
@@ -30,7 +39,7 @@ do
     if [[ $quit == "q" ]]
     then
       echo ""
-      ./recycling.sh $1 $4
+      ./recycling.sh $1 $3 # CHANGED
       break 2
     fi
     sleep 0.1
@@ -70,5 +79,5 @@ do
 
   # Extraction and recycling
   ./extract_data.sh $1.txt data/$date/mitm$log_num.log
-  ./recycling.sh $1 $4
+  ./recycling.sh $1 $3 # CHANGED
 done
