@@ -18,7 +18,7 @@ do
   
   echo "Launching with randomized profile $SELECTED_CONTAINER"
   
-  ./creation.sh $1 $SELECTED_PROFILE $2 $3
+  ./creation.sh $1 $SELECTED_CONTAINER $2 $3
   sleep 3
 
   # WILL BE CHANGING THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG
