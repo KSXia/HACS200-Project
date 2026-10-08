@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check for right number of arguments, print usage text if wrong
-if [[ $# -ne 3 ]] # CHANGED
+if [[ $# -ne 3 ]]
 then
   echo "[Usage]: ./main_loop.sh [container name] [profile] [mitm config file] [mitm process name]"
   exit 1
@@ -21,22 +21,23 @@ do
   ./creation.sh $1 $SELECTED_PROFILE $2 $3
   sleep 3
 
-  past_user=`lxc exec $1 -- sudo c | wc -l`
-  new_users=`lxc exec $1 -- sudo cat /etc/passwd | wc -l`
+  # WILL BE CHANGING THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG
+  past_user=`lxc exec $1 -- sudo last | head -n 1`
+  new_user=`lxc exec $1 -- sudo last | head -n 1`
 
   echo "[Setup]: Setup complete, waiting for attacker to connect..."
   echo "[Input]: Type 'q' to exit process and delete container"
   
   # Check for new user
-  while [[ $new_users == $num_users ]]
+  while [[ $past_user == $new_user ]]
   do
-    new_users=`lxc exec $1 -- sudo cat /etc/passwd | wc -l`
+    new_user=`lxc exec $1 -- sudo last | head -n 1`
     quit=""
     read -t 0.1 -n 1 quit
     if [[ $quit == "q" ]]
     then
       echo ""
-      ./recycling.sh $1 $3 # CHANGED
+      ./recycling.sh $1 $3
       break 2
     fi
     sleep 0.1
@@ -45,12 +46,15 @@ do
   echo "[!] Attacker has entered the container"
   
   num_online=1
+  enter_time=`date +%s`
   
   # Check if attacker has exited container
-  while [[ $num_online -gt 0 ]]
+  while [[ $num_online -gt 0 && $time_elapsed < 300]]
   do
     num_online=`lxc exec $1 -- who | wc -l`
     sleep 0.5
+    curr_time=`date +%s`
+    time_elapsed=$(( $curr_time - $enter_time ))
   done
 
   echo "[!] Attacker has left container"
@@ -76,5 +80,5 @@ do
 
   # Extraction and recycling
   ./extract_data.sh $1.txt data/$date/mitm$log_num.log
-  ./recycling.sh $1 $3 # CHANGED
+  ./recycling.sh $1 $3
 done
