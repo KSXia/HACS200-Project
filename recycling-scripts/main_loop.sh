@@ -52,6 +52,8 @@ do
   # Check if attacker has exited container
   while [[ $num_online -gt 0 || $time_elapsed < 300]]
   do
+    # ---TODO---
+    # Change this to base whether the attacker is still connected on the MITM logs
     num_online=`lxc exec $1 -- who | wc -l`
     sleep 0.5
     curr_time=`date +%s`

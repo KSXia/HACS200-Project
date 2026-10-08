@@ -2,19 +2,18 @@
 
 if [[ $# -ne 4 ]]
 then
-  echo "[Usage]: ./creation.sh [profile] [container name] [mitm config file] [mitm process name]"
+  echo "[Usage]: ./creation.sh [image] [profile] [mitm config file] [mitm process name]"
   exit 1
 fi
 
+
 echo "[!] Launching Container"
-lxc launch ubuntu:20.04 $2 -p $1 > /dev/null
-echo "[!] Installing ssh..."
-sleep 3 # Trust me this is extremely important the container needs time to update it's hostname before using sudo commands
-lxc exec $2 -- sudo apt-get install openssh-server >/dev/null
-lxc exec $2 -- bash -c "sudo echo PasswordAuthentication yes > /etc/ssh/sshd_config"
-lxc exec $2 -- bash -c "sudo echo PubkeyAuthentication no >> /etc/ssh/sshd_config"
-lxc exec $2 -- bash -c "sudo echo PermitRootLogin yes >> /etc/ssh/sshd_config"
-lxc exec $2 -- sudo systemctl restart ssh >/dev/null
+profile_num="${$2: -2}"
+container_name="$1-$profile_num"
+lxc launch $1 -p $2 > /dev/null
+
+# ---TODO---
+# Change MITM configuration to be based on profile (this may also require making multiple jsons for each profile
 echo "[!] Starting MITM.."
 sudo screen -dmS $4 node /root/honeypots/MITM/mitm/index.js $3
 
