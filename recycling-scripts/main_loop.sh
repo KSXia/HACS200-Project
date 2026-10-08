@@ -49,7 +49,7 @@ do
   enter_time=`date +%s`
   
   # Check if attacker has exited container
-  while [[ $num_online -gt 0 && $time_elapsed < 300]]
+  while [[ $num_online -gt 0 || $time_elapsed < 300]]
   do
     num_online=`lxc exec $1 -- who | wc -l`
     sleep 0.5
