@@ -9,22 +9,19 @@ fi
 
 ./recycling.sh $1 $3   # Delete container/MITM if still running
 
-# CHANGED
-PROFILES=("profile-01" "profile-02" "profile-03" "profile-04")
+CONTAINERS=("cont-cont" "ssh-cont" "ssl-cont" "api-cont")
 
 while true
 do
-  # CHANGED
-  RANDOM_INDEX=$((RANDOM \%${#PROFILES[@]}))
-  SELECTED_PROFILE=${PROFILES[$RANDOM_INDEX]}
+  RANDOM_INDEX=$((RANDOM \%${#CONTAINERS[@]}))
+  SELECTED_CONTAINER=${CONTAINERS[$RANDOM_INDEX]}
   
-  echo "Launching with randomized profile $SELECTED_PROFILE"
+  echo "Launching with randomized profile $SELECTED_CONTAINER"
   
-  # CHANGED
   ./creation.sh $1 $SELECTED_PROFILE $2 $3
   sleep 3
 
-  num_users=`lxc exec $1 -- sudo cat /etc/passwd | wc -l`
+  past_user=`lxc exec $1 -- sudo c | wc -l`
   new_users=`lxc exec $1 -- sudo cat /etc/passwd | wc -l`
 
   echo "[Setup]: Setup complete, waiting for attacker to connect..."
