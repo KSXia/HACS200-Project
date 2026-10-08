@@ -20,8 +20,9 @@ do
   
   ./creation.sh $1 $SELECTED_CONTAINER $2 $3
   sleep 3
-
-  # WILL BE CHANGING THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG
+  
+  # ---TODO---
+  # NEED TO CHANGE THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG
   past_user=`lxc exec $1 -- sudo last | head -n 1`
   new_user=`lxc exec $1 -- sudo last | head -n 1`
 
