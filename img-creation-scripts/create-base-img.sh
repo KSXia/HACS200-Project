@@ -6,6 +6,8 @@ then
   exit 1
 fi
 
+lxc info base-img &>/dev/null && (lxc stop base-img; lxc delete base-img)
+
 echo "[INFO] Launching Container "
 lxc launch ubuntu:20.04 base-img > /dev/null
 
