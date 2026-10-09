@@ -6,6 +6,7 @@ then
   exit 1
 fi
 
+lxc image delete base-img
 lxc info base-img &>/dev/null && (lxc stop base-img; lxc delete base-img)
 
 echo "[INFO] Launching Container "
