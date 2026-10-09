@@ -13,12 +13,12 @@ lxc launch ubuntu:20.04 base-img > /dev/null
 
 echo "[INFO] Installing sshd"
 sleep 10 # Trust me this is extremely important the container needs time to update it's hostname before using sudo commands
-lxc exec $1 -- sudo apt-get install openssh-server >/dev/null
-lxc exec $1 -- sudo rm -rf /etc/ssh/sshd_config.d
-lxc exec $1 -- bash -c "sudo echo PasswordAuthentication yes > /etc/ssh/sshd_config"
-lxc exec $1 -- bash -c "sudo echo PubkeyAuthentication no >> /etc/ssh/sshd_config"
-lxc exec $1 -- bash -c "sudo echo PermitRootLogin yes >> /etc/ssh/sshd_config"
-lxc exec $1 -- sudo systemctl restart ssh >/dev/null
+lxc exec base-img -- sudo apt-get install openssh-server >/dev/null
+lxc exec base-img -- sudo rm -rf /etc/ssh/sshd_config.d
+lxc exec base-img -- bash -c "sudo echo PasswordAuthentication yes > /etc/ssh/sshd_config"
+lxc exec base-img -- bash -c "sudo echo PubkeyAuthentication no >> /etc/ssh/sshd_config"
+lxc exec base-img -- bash -c "sudo echo PermitRootLogin yes >> /etc/ssh/sshd_config"
+lxc exec base-img -- sudo systemctl stop ssh >/dev/null
 
 echo "[INFO] Creating git repository"
 # ---TODO--- 
