@@ -24,5 +24,13 @@ echo "[INFO] Creating git repository"
 
 echo "[INFO] Completed base image setup"
 
+echo "[INFO] Stopping container"
+lxc stop base-img
+
+echo "[INFO] Publishing image"
+lxc publish base-img --alias base-img
+lxc delete base-img
+
+echo "[INFO] Image creation complete!"
 
 
