@@ -1,13 +1,13 @@
 #!/bin/bash
 
-if [[ $# -ne 1 ]]
+if [[ $# -ne 0 ]]
 then
-  echo "[Usage]: ./create_base_img.sh [image name]"
+  echo "[Usage]: ./create_base_img.sh"
   exit 1
 fi
 
-echo "[INFO] Launching Container \"$1\""
-lxc launch ubuntu:20.04 $1 > /dev/null
+echo "[INFO] Launching Container "
+lxc launch ubuntu:20.04 base-img > /dev/null
 
 echo "[INFO] Installing sshd"
 sleep 10 # Trust me this is extremely important the container needs time to update it's hostname before using sudo commands
@@ -22,7 +22,7 @@ echo "[INFO] Creating git repository"
 # ---TODO--- 
 # Implement code to create a fake git repo
 
-echo "[INFO] Completed base setup for \"$1\""
+echo "[INFO] Completed base image setup"
 
 
 
