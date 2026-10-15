@@ -1,20 +1,19 @@
 #!/bin/bash
 
-if [[ $# -ne 4 ]]
+if [[ $# -ne 3 ]]
 then
-  echo "[Usage]: ./creation.sh [image] [profile] [mitm config file] [mitm process name]"
+  echo "[Usage]: ./creation.sh [treatment] [number] [mitm process name]"
   exit 1
 fi
 
 
 echo "[!] Launching Container"
-profile_num="${$2: -2}"
-container_name="$1-$profile_num"
-lxc launch $1 $container_name -p $2 > /dev/null
-lxc exec $container_name -- sudo systemctl restart ssh
+container_name="cont-$2"
+lxc launch base-img $container_name -p profile-$2 > /dev/null
+sudo cp -r ../container-files/$1-cont /var/snap/lxd/common/mntns/var/snap/lxd/common/lxd/storage-pools/default/containers/$container_name/rootfs/root/
 
 # ---TODO---
 # Change MITM configuration to be based on profile (this may also require making multiple jsons for each profile
 echo "[!] Starting MITM.."
-sudo screen -dmS $4 node /root/honeypots/MITM/mitm/index.js $3
+sudo screen -L -Logfile log-$2 -dmS $3 sudo node /root/honeypots/MITM/mitm/index.js cont-$2
 
