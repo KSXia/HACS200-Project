@@ -1,7 +1,7 @@
 #!/bin/bash
-# profile-04: SSL key honeypot, static IP 172.16.1.4
-PROFILE="profile-04"
-IP="172.16.1.4"
+# profile-02: SSH key honeypot (key file in a .ssh folder), static IP 172.16.1.2
+PROFILE="profile-02"
+IP="172.20.1.2"
 
 if lxc profile show "$PROFILE" &>/dev/null; then
   echo "[INFO] $PROFILE already exists, updating IP only"

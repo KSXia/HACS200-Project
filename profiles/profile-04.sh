@@ -1,7 +1,7 @@
 #!/bin/bash
-# profile-01: control honeypot (no key files), static IP 172.16.1.1
-PROFILE="profile-01"
-IP="172.16.1.1"
+# profile-04: SSL key honeypot, static IP 172.16.1.4
+PROFILE="profile-04"
+IP="172.20.1.4"
 
 if lxc profile show "$PROFILE" &>/dev/null; then
   echo "[INFO] $PROFILE already exists, updating IP only"
