@@ -10,6 +10,7 @@ fi
 lxc info cont-$1 &>/dev/null && ./recycling.sh cont-$1 $2   # Delete container/MITM if still running
 
 CONTAINERS=("cont" "ssh" "ssl" "api")
+begin_recycle=0
 
 while true
 do
@@ -19,6 +20,8 @@ do
   echo "Launching with randomized treatment: \"$SELECTED_CONTAINER\""
   
   ./creation.sh $SELECTED_CONTAINER $1 $2
+  end_recycle=$(date +%s)
+  [[ $begin_recycle != 0 ]] && echo "Recycled in $(($end_recycle - $begin_recycle)) seconds"
   sleep 10
   
   # ---TODO---
@@ -45,7 +48,7 @@ do
   done
   
   echo "[!] Attacker has entered the container"
-  
+
   num_online=1
   enter_time=`date +%s`
   
@@ -61,7 +64,7 @@ do
   done
 
   echo "[!] Attacker has left container"
-  
+  begin_recycle=$(date +%s)
   date=`date +%Y-%m-%d`
   
   # Make new directory if there is no directory for the current date
