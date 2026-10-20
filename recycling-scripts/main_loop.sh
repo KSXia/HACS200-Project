@@ -3,6 +3,8 @@
 # Check for right number of arguments, print usage text if wrong
 if [[ $# -ne 2 ]]
 then
+  # ---TODO---
+  # Remove mitm process name argument and just use number for everything (mitm process name can just be mitm-$number and be inputted into other scripts as such)
   echo "[Usage]: ./main_loop.sh [number] [mitm process name]"
   exit 1
 fi
@@ -18,7 +20,8 @@ do
   SELECTED_CONTAINER=${CONTAINERS[$RANDOM_INDEX]}
   
   echo "Launching with randomized treatment: \"$SELECTED_CONTAINER\""
-  
+  # ---TODO---
+  # Change creation.sh to not attempt to launch a new container when the container exists (part fo snapshot reconfig)
   ./creation.sh $SELECTED_CONTAINER $1 $2
   end_recycle=$(date +%s)
   [[ $begin_recycle != 0 ]] && echo "Recycled in $(($end_recycle - $begin_recycle)) seconds"
@@ -41,6 +44,8 @@ do
     if [[ $quit == "q" ]]
     then
       echo ""
+      # ---TODO---
+      # Change recycle to have the option to hard reset (remove cont) and soft reset (reset back to snapshot), this will be a hard reset
       ./recycling.sh cont-$1 $2
       break 2
     fi
@@ -86,5 +91,8 @@ do
 
   # Extraction and recycling
   # ./extract_data.sh log-$profile_num.txt data/$date/mitm$log_num.log
+  
+  # ---TODO---
+  # Change recycle to have the option to hard reset (remove cont) and soft reset (reset back to snapshot), this will be a hard reset
   ./recycling.sh cont-$1 $2
 done
