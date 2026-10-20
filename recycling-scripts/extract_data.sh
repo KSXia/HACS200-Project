@@ -1,35 +1,71 @@
 #!/bin/bash
 
-if [[ $# -ne 2 ]]
+if [[ $# -ne 3 ]]
 then
-  echo "[Usage]: ./extract_data.sh [MITM log file path] [output files path]"
+  echo "[Usage]: ./extract_data.sh [MITM log file path] [output file path] [treatment]"
+  exit 1
+fi
+
+log="$1"
+out="$2"
+treatment="$3"
+
+# MITM keys its login files by zero-padded container number (cont-01.txt)
+log_name=$(basename "$log")
+num="${log_name#log-}"
+num=$(printf "%02d" "$((10#$num))")
+login_file="/root/MITM_data/logins/cont-${num}.txt"
+
+if [[ ! -f $log ]]
+then
+  echo "[Extraction]: Log file $log not found"
   exit 1
 fi
 
 echo "[Extraction]: Extracting and parsing data from MITM log file..."
 
-# Record date and time connected
-t_start=`cat $1 | grep "\[LXC-Auth\]" | colrm 24`
-echo $t_start >> $2
+# Date and time connected / disconnected (first auth line, last close line)
+t_start=$(grep "\[LXC-Auth\]" "$log" | head -n 1 | colrm 24)
+t_end=$(grep "\[LXC\] Container's OpenSSH server closed" "$log" | tail -n 1 | colrm 24)
 
-# Record number of commands
-cat $1 | grep "\[SHELL\] line from reader:" | colrm 1 60 | wc -l >> $2
+if [[ -z $t_start || -z $t_end ]]
+then
+  echo "[Extraction]: Could not find connect/disconnect timestamps in $log"
+  exit 1
+fi
 
-# Record a list of commands
-cat $1 | grep "\[SHELL\] line from reader:" | colrm 1 60 | sed 's/,/,,/g' | awk '{sub(/\r$/,""); printf("%s\", \"", $0)} END {print ""}' | sed 's/^/[\"/' | sed 's/, \"$/]/' >> $2
+# Time spent connected (ms)
+ms_start=$(date -d "$t_start" +%s%3N)
+ms_end=$(date -d "$t_end" +%s%3N)
 
-# Record IP address
-sudo cat /root/MITM_data/logins/$1 | tail -1 | cut -d";" -f2 >> $2
+if [[ -z $ms_start || -z $ms_end ]]
+then
+  echo "[Extraction]: Could not parse timestamps ('$t_start' / '$t_end')"
+  exit 1
+fi
 
-# Record time spent connected (ms)
-t_end=`cat $1 | grep "\[LXC\] Container's OpenSSH server closed" | colrm 24`
+t_delta=$(( ms_end - ms_start ))
 
-epoch_start=`date -d "$t_start" +%s`
-ms_start=`echo $t_start | colrm 1 20 | sed 's/^0*//'`
+# Number of commands
+num_cmds=$(grep -c "\[SHELL\] line from reader:" "$log")
 
-epoch_end=`date -d "$t_end" +%s`
-ms_end=`echo $t_end | colrm 1 20 | sed 's/^0*//'`
+# List of commands
+if [[ $num_cmds -eq 0 ]]
+then
+  cmd_list="[]"
+else
+  cmd_list=$(grep "\[SHELL\] line from reader:" "$log" | colrm 1 60 | sed 's/,/,,/g' | awk '{sub(/\r$/,""); printf("%s\", \"", $0)} END {print ""}' | sed 's/^/["/' | sed 's/, "$/]/')
+fi
 
-t_delta=$(( ($epoch_end - $epoch_start) * 1000 + ($ms_end - $ms_start) ))
+# IP address
+ip=$(sudo cat "$login_file" | tail -n 1 | cut -d";" -f2)
 
-echo $t_delta >> $2
+# Write everything at once so a failure above never leaves a partial record
+{
+  echo "$t_start"
+  echo "$num_cmds"
+  echo "$cmd_list"
+  echo "$ip"
+  echo "$t_delta"
+  echo "$treatment"
+} >> "$out"
