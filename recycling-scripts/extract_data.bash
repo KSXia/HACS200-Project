@@ -55,7 +55,7 @@ else
 fi
 
 # IP address
-ip=$(sudo cat "/root/MITM_data/logins/cont-$1.txt" | tail -n 1 | cut -d";" -f2)
+ip=$(sudo cat "/root/MITM_data/logins/$1.txt" | tail -n 1 | cut -d";" -f2)
 
 # Write everything at once so a failure above never leaves a partial record
 {
@@ -64,5 +64,5 @@ ip=$(sudo cat "/root/MITM_data/logins/cont-$1.txt" | tail -n 1 | cut -d";" -f2)
   echo "$cmd_list"
   echo "$ip"
   echo "$t_delta"
-  echo "$treatment"
+  echo "$2"
 } >> "$4"

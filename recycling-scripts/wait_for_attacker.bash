@@ -2,16 +2,21 @@
 
 # "$1" = [container]
     # [container] is the unique container name
-if [[ $# -ne 1 ]]; then
-    echo "usage: ./wait_for_attacker.bash [container]"
+# "$2" = [mitmp]
+    # [mitmp] is the unique MITM process name
+if [[ $# -ne 2 ]]; then
+    echo "usage: ./wait_for_attacker.bash [container] [mitmp]"
     exit 1
 fi
 
-# Hard reset and exit (used by 'q' and Ctrl-C)
+container="$1"
+mitmp="$2"
+
+# Hard reset and exit (used by 'q' and Ctrl-C); exit 11 tells main.bash to stop
 quit_now() {
   echo ""
-  ./delete_container.bash "$1"
-  exit 0
+  ./delete_container.bash "$container" "$mitmp"
+  exit 11
 }
 
 # Wait up to $1 seconds for a keypress, quit if it is 'q'
@@ -25,8 +30,8 @@ trap quit_now INT
 
 # ---TODO---
 # NEED TO CHANGE THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG
-past_user=`lxc exec "$1" -- sudo last < /dev/null | head -n 1`
-new_user=`lxc exec "$1" -- sudo last < /dev/null | head -n 1`
+past_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`
+new_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`
 
 # echo "[Setup]: Setup complete, waiting for attacker to connect..."
 # echo "[Input]: Type 'q' to exit process and delete container"
@@ -34,7 +39,7 @@ new_user=`lxc exec "$1" -- sudo last < /dev/null | head -n 1`
 # Check for new user
 while [[ "$past_user" == "$new_user" ]]
 do
-  new_user=$(lxc exec "$1" -- sudo last < /dev/null | head -n 1)
+  new_user=$(lxc exec "$container" -- sudo last < /dev/null | head -n 1)
   wait_or_quit 0.1
 done
 
@@ -47,7 +52,7 @@ while [[ $num_online -gt 0 ]]
 do
   # ---TODO---
   # Change this to base whether the attacker is still connected on the MITM logs
-  num_online=`lxc exec "$1" -- who < /dev/null | wc -l`
+  num_online=`lxc exec "$container" -- who < /dev/null | wc -l`
   wait_or_quit 0.5
 done
 

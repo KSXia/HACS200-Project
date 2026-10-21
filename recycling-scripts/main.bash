@@ -14,7 +14,12 @@ fi
 TREATMENTS=("control" "ssh" "ssl" "api")
 
 # ignore keyboard interrupts
-trap "" INT
+trap : INT
+
+# Delete container/MITM if still running from a previous run
+if lxc info "$2" &>/dev/null; then
+    ./delete_container.bash "$2" "$3"
+fi
 
 while true; do
     # RANDOM is a random integer between 0 and 32767 (2^15 - 1)
@@ -31,7 +36,7 @@ while true; do
     echo "todo!() why sleep 10"
     sleep 10
 
-    ./wait_for_attacker.bash "$2"
+    ./wait_for_attacker.bash "$2" "$3"
     if (($? == 11)); then
         exit 11
     fi
@@ -43,7 +48,7 @@ while true; do
     fi
     log_num=$(ls data/$date | wc -l)
 
-    ./wait_for_log.bash "$2"
+    ./wait_for_log.bash "$2" "$3"
     if (($? == 11)); then
         exit 11
     fi
