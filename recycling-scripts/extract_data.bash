@@ -1,34 +1,35 @@
 #!/bin/bash
 
-# "$1" = [container]
-    # [container] is the unique name of the container
-# "$2" = [treatment]
-    # [treatment] is the name of the treatment
-# "$3" = [mitml fp]
-    # [mitml fp] is the MITM log file path
-# "$4" = [output fp]
-    # [output fp] is the output file path
+# [container] is the unique name of the container
+# [treatment] is the name of the treatment
+# [mitml fp] is the MITM log file path
+# [output fp] is the output file path
 if [[ $# -ne 4 ]]
 then
     echo "usage: ./extract_data.bash [container] [treatment] [mitml fp] [output fp]"
     exit 1
 fi
 
-echo "extracting data from MITM container \"$1\" with treatment \"$2\":"
-echo "    mitml fp \"$3\""
-echo "    output fp \"$4\""
+$container="$1"
+$treatment="$2"
+$mitml_fp="$3"
+$output_fp="$4"
 
-if [[ ! -f "$3" ]]; then
+echo "extracting data from MITM container \"$container\" with treatment \"$treatment\":"
+echo "    mitml fp \"$mitml_fp\""
+echo "    output fp \"$output_fp\""
+
+if [[ ! -f "$mitml_fp" ]]; then
     echo "mitml file not found"
     exit 1
 fi
 
 # Date and time connected / disconnected (first auth line, last close line)
-t_start=$(grep "\[LXC-Auth\]" "$3" | head -n 1 | colrm 24)
-t_end=$(grep "\[LXC\] Container's OpenSSH server closed" "$3" | tail -n 1 | colrm 24)
+t_start=$(grep "\[LXC-Auth\]" "$mitml_fp" | head -n 1 | colrm 24)
+t_end=$(grep "\[LXC\] Container's OpenSSH server closed" "$mitml_fp" | tail -n 1 | colrm 24)
 
 if [[ -z $t_start || -z $t_end ]]; then
-  echo "could not find connect and/or disconnect timestamps in mitml fp \"$3\""
+  echo "could not find connect and/or disconnect timestamps in mitml fp \"$mitml_fp\""
   exit 1
 fi
 
@@ -45,13 +46,13 @@ fi
 t_delta=$(( ms_end - ms_start ))
 
 # Number of commands
-num_cmds=$(grep -c "\[SHELL\] line from reader:" "$3")
+num_cmds=$(grep -c "\[SHELL\] line from reader:" "$mitml_fp")
 
 # List of commands
 if [[ $num_cmds -eq 0 ]]; then
   cmd_list="[]"
 else
-  cmd_list=$(grep "\[SHELL\] line from reader:" "$3" | colrm 1 60 | sed 's/,/,,/g' | awk '{sub(/\r$/,""); printf("%s\", \"", $0)} END {print ""}' | sed 's/^/["/' | sed 's/, "$/]/')
+  cmd_list=$(grep "\[SHELL\] line from reader:" "$mitml_fp" | colrm 1 60 | sed 's/,/,,/g' | awk '{sub(/\r$/,""); printf("%s\", \"", $0)} END {print ""}' | sed 's/^/["/' | sed 's/, "$/]/')
 fi
 
 # IP address
@@ -64,5 +65,5 @@ ip=$(sudo cat "/root/MITM_data/logins/$1.txt" | tail -n 1 | cut -d";" -f2)
   echo "$cmd_list"
   echo "$ip"
   echo "$t_delta"
-  echo "$2"
-} >> "$4"
+  echo "$treatment"
+} >> "$output_fp"

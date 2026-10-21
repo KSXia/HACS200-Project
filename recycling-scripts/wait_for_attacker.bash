@@ -29,12 +29,12 @@ wait_or_quit() {
 trap quit_now INT
 
 # ---TODO---
-# NEED TO CHANGE THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG
+echo "NEED TO CHANGE THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG"
 past_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`
 new_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`
 
-# echo "[Setup]: Setup complete, waiting for attacker to connect..."
-# echo "[Input]: Type 'q' to exit process and delete container"
+echo "[Setup]: Setup complete, waiting for attacker to connect..."
+echo "[Input]: Type 'q' to exit process and delete container"
 
 # Check for new user
 while [[ "$past_user" == "$new_user" ]]
@@ -51,7 +51,7 @@ num_online=1
 while [[ $num_online -gt 0 ]]
 do
   # ---TODO---
-  # Change this to base whether the attacker is still connected on the MITM logs
+  echo "Change this to base whether the attacker is still connected on the MITM logs"
   num_online=`lxc exec "$container" -- who < /dev/null | wc -l`
   wait_or_quit 0.5
 done

@@ -9,16 +9,19 @@ if [[ $# -ne 2 ]]; then
     exit 1
 fi
 
-echo "recyling container \"$1\""
+$container="$1"
+$mitmp="$2"
+
+echo "recyling container \"$container\""
 echo -n "stopping container.. "
-lxc stop "$1" > /dev/null
+lxc stop "$container" > /dev/null
 echo "done"
 echo -n "restoring container to base snapshot.. "
-lxc restore "$1" "snapshot-base" > /dev/null
+lxc restore "$container" "snapshot-base" > /dev/null
 echo "done"
 echo -n "starting container.. "
-lxc start "$1" > /dev/null
+lxc start "$container" > /dev/null
 echo "done"
 echo -n "stopping mitmp.. "
-sudo screen -S "$2" -X quit > /dev/null
+sudo screen -S "$mitmp" -X quit > /dev/null
 echo "done"

@@ -11,14 +11,18 @@ if [[ $# -ne 3 ]]; then
     exit 1
 fi
 
+$profile="$1"
+$container="$2"
+$mitmp="$3"
+
 TREATMENTS=("control" "ssh" "ssl" "api")
 
 # ignore keyboard interrupts
 trap : INT
 
 # Delete container/MITM if still running from a previous run
-if lxc info "$2" &>/dev/null; then
-    ./delete_container.bash "$2" "$3"
+if lxc info "$container" &>/dev/null; then
+    ./delete_container.bash "$container" "$mitmp"
 fi
 
 while true; do
@@ -30,13 +34,13 @@ while true; do
     random_treatment=${TREATMENTS[$random_index]}
 
     echo "random treatment selected: $random_treatment"
-    ./creation.bash "$random_treatment" "$1" "$2" "$3"
+    ./creation.bash "$random_treatment" "$profile" "$container" "$mitmp"
 
     # todo!() figure out why this `sleep 10` is here
     echo "todo!() why sleep 10"
     sleep 10
 
-    ./wait_for_attacker.bash "$2" "$3"
+    ./wait_for_attacker.bash "$container" "$mitmp"
     if (($? == 11)); then
         exit 11
     fi
@@ -48,11 +52,11 @@ while true; do
     fi
     log_num=$(ls data/$date | wc -l)
 
-    ./wait_for_log.bash "$2" "$3"
+    ./wait_for_log.bash "$container" "$mitmp"
     if (($? == 11)); then
         exit 11
     fi
 
-    ./extract_data.bash "$2" "$random_treatment" "log-$2" "data/$date/mitm-$log_num.log"
-    ./recycle_container.bash "$2" "$3"
+    ./extract_data.bash "$container" "$random_treatment" "log-$container" "data/$date/mitm-$log_num.log"
+    ./recycle_container.bash "$container" "$mitmp"
 done
