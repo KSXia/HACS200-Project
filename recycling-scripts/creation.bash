@@ -11,6 +11,7 @@ fi
 profile="$1"
 container="$2"
 mitmp="$3"
+mitmconf="${container}.js"
 
 echo "creating MITM container \"$container\":"
 echo "    profile \"$profile\""
@@ -32,5 +33,5 @@ fi
 echo -n "starting MITM process.. "
 # truncate old log
 : > "log-$container"
-sudo screen -L -Logfile "log-$container" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$container"
+sudo screen -L -Logfile "log-$container" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
 echo "done"
