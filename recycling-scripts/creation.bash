@@ -23,7 +23,6 @@ else
     # container does not exist
     echo -n "launching container.. "
     lxc launch base-img "$container" -p "$profile" 1> /dev/null
-    echo "lxc launch base-img \"$container\" -p \"$profile\" 1> /dev/null"
     echo "done"
     echo -n "creating base snapshot.. "
     lxc snapshot "$container" snapshot-base
