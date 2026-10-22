@@ -27,7 +27,7 @@ while true; do
     # modulo by the number of treatments to create a bounded index
     random_index=$((random_number % ${#TREATMENTS[@]}))
     # index into list of treatments to select a treatment
-    random_treatment=${TREATMENTS[$random_index]}
+    export random_treatment=${TREATMENTS[$random_index]}
 
     echo "random treatment selected: $random_treatment"
     ./creation.bash "$profile" "$container" "$mitmp"
