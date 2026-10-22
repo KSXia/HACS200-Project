@@ -25,6 +25,11 @@ echo "[INFO] Creating git repository"
 # ---TODO--- 
 # Implement code to create a fake git repo
 
+echo "[INFO] Adding in treatments"
+lxc file push -r ../container-files/ssl-cont/etc/ base-img/
+lxc file push -r ../container-files/ssh-cont/.ssh base-img/root/
+lxc file push -r ../container-files/api-cont/AI-Powered-Tutor/ base-img/root/
+
 echo "[INFO] Completed base image setup"
 
 echo "[INFO] Stopping container"
