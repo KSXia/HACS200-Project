@@ -12,6 +12,7 @@ profile="$1"
 container="$2"
 mitmp="$3"
 
+echo "creating MITM container \"$container\":"
 echo "    profile \"$profile\""
 echo "    MITM process name \"$mitmp\""
 
