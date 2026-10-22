@@ -1,19 +1,15 @@
 #!/bin/bash
 
-# "$1" = [profile]
-    # [profile] is the unique profile name associated with an IP address
-# "$2" = [container]
-    # [container] is the unique container name
-# "$3" = [mitmp]
-    # [mitmp] is the unique MITM process name
+# "$1" = [number]
+    # [number] The unique number that identifies the profile, container, mitm process, and log file names
 if [[ $# -ne 1 ]]; then
     echo "usage: ./main.bash [number]"
     exit 1
 fi
 
-profile="profile-$number"
-container="cont-$number"
-mitmp="mitm-$number"
+profile="profile-$1"
+container="cont-$1"
+mitmp="mitm-$1"
 
 TREATMENTS=("control" "ssh" "ssl" "api")
 
@@ -34,7 +30,7 @@ while true; do
     random_treatment=${TREATMENTS[$random_index]}
 
     echo "random treatment selected: $random_treatment"
-    ./creation.bash "$random_treatment" "$profile" "$container" "$mitmp"
+    ./creation.bash "$profile" "$container" "$mitmp"
 
     # todo!() figure out why this `sleep 10` is here
     echo "todo!() why sleep 10"

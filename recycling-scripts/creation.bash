@@ -8,9 +8,9 @@ if [[ $# -ne 3 ]]; then
     exit 1
 fi
 
-profile="$2"
-container="$3"
-mitmp="$4"
+profile="$1"
+container="$2"
+mitmp="$3"
 
 echo "    profile \"$profile\""
 echo "    MITM process name \"$mitmp\""
@@ -22,6 +22,7 @@ else
     # container does not exist
     echo -n "launching container.. "
     lxc launch base-img "$container" -p "$profile" 1> /dev/null
+    echo "lxc launch base-img \"$container\" -p \"$profile\" 1> /dev/null"
     echo "done"
     echo -n "creating base snapshot.. "
     lxc snapshot "$container" snapshot-base
