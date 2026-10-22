@@ -7,8 +7,8 @@ if [[ $# -ne 2 ]]; then
     exit 1
 fi
 
-$container="$1"
-$mitmp="$2"
+container="$1"
+mitmp="$2"
 
 echo "deleting container \"$container\""
 echo -n "stopping container.. "

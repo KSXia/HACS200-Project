@@ -9,12 +9,12 @@ if [[ $# -ne 4 ]]; then
     exit 1
 fi
 
-$treatment="$1"
-$profile="$2"
-$container="$3"
-$mitmp="$4"
+treatment="$1"
+profile="$2"
+container="$3"
+mitmp="$4"
 
-echo "creating MITM container \"$3\" with treatment \"$treatment\":"
+echo "creating MITM container \"$container\" with treatment \"$treatment\":"
 echo "    profile \"$profile\""
 echo "    MITM process name \"$mitmp\""
 
@@ -24,7 +24,7 @@ if lxc info "$container" &> /dev/null; then
 else
     # container does not exist
     echo -n "launching container.. "
-    lxc launch base-img "$container" -p "$2" 1> /dev/null
+    lxc launch base-img "$container" -p "$profile" 1> /dev/null
     echo "done"
     echo -n "creating base snapshot.. "
     lxc snapshot "$container" snapshot-base

@@ -11,9 +11,9 @@ if [[ $# -ne 3 ]]; then
     exit 1
 fi
 
-$profile="$1"
-$container="$2"
-$mitmp="$3"
+profile="$1"
+container="$2"
+mitmp="$3"
 
 TREATMENTS=("control" "ssh" "ssl" "api")
 

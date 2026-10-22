@@ -10,10 +10,10 @@ then
     exit 1
 fi
 
-$container="$1"
-$treatment="$2"
-$mitml_fp="$3"
-$output_fp="$4"
+container="$1"
+treatment="$2"
+mitml_fp="$3"
+output_fp="$4"
 
 echo "extracting data from MITM container \"$container\" with treatment \"$treatment\":"
 echo "    mitml fp \"$mitml_fp\""
