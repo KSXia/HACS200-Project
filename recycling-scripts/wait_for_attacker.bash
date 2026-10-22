@@ -28,6 +28,10 @@ wait_or_quit() {
 
 trap quit_now INT
 
+# todo!() figure out why this `sleep 10` is here
+echo "todo!() why sleep 10"
+sleep 10
+
 # ---TODO---
 echo "NEED TO CHANGE THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG"
 past_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`

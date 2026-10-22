@@ -32,10 +32,6 @@ while true; do
     echo "random treatment selected: $random_treatment"
     ./creation.bash "$profile" "$container" "$mitmp"
 
-    # todo!() figure out why this `sleep 10` is here
-    echo "todo!() why sleep 10"
-    sleep 10
-
     ./wait_for_attacker.bash "$container" "$mitmp"
     if (($? == 11)); then
         exit 11
