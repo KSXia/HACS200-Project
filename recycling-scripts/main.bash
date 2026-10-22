@@ -6,14 +6,14 @@
     # [container] is the unique container name
 # "$3" = [mitmp]
     # [mitmp] is the unique MITM process name
-if [[ $# -ne 3 ]]; then
-    echo "usage: ./main.bash [profile] [container] [mitmp]"
+if [[ $# -ne 1 ]]; then
+    echo "usage: ./main.bash [number]"
     exit 1
 fi
 
-profile="$1"
-container="$2"
-mitmp="$3"
+profile="profile-$number"
+container="cont-$number"
+mitmp="mitm-$number"
 
 TREATMENTS=("control" "ssh" "ssl" "api")
 
