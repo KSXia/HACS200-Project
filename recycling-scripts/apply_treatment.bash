@@ -8,23 +8,25 @@ fi
 
 treatment=$(cat treatment.txt)
 
+lxc exec $MITM_CONTAINER_NAME -- sudo mv /AI-Powered-Tutor -- "$MITM_HOME_DIR/"
+
 if [[ "$treatment" == "ssh" ]]
 then
-  lxc exec $MITM_CONTAINER_NAME -- rm /etc/ssl/private/private.key
-  lxc exec $MITM_CONTAINER_NAME -- rm -rf /AI-Powered-Tutor
-  lxc exec $MITM_CONTAINER_NAME -- mv /.ssh -- "$MITM_HOME_DIR/"
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm /etc/ssl/private/private.key
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm /.env
+  lxc exec $MITM_CONTAINER_NAME -- sudo mv /.ssh -- "$MITM_HOME_DIR/"
 elif [[ "$treatment" == "ssl" ]]
 then
-  lxc exec $MITM_CONTAINER_NAME -- rm -rf /AI-Powered-Tutor
-  lxc exec $MITM_CONTAINER_NAME -- rm -rf /.ssh
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm /.env
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm -rf /.ssh
 elif [[ "$treatment" == "api" ]]
 then
-  lxc exec $MITM_CONTAINER_NAME -- rm /etc/ssl/private/private.key
-  lxc exec $MITM_CONTAINER_NAME -- mv /AI-Powered-Tutor/.env -- "$MITM_HOME_DIR/.env"
-  lxc exec $MITM_CONTAINER_NAME -- rm -rf /.ssh
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm /etc/ssl/private/private.key
+  lxc exec $MITM_CONTAINER_NAME -- sudo mv /.env -- "$MITM_HOME_DIR/AI-Powered-Tutor/.env"
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm -rf /.ssh
 else
-  lxc exec $MITM_CONTAINER_NAME -- rm /etc/ssl/private/private.key
-  lxc exec $MITM_CONTAINER_NAME -- rm -rf /AI-Powered-Tutor -- "$MITM_HOME_DIR/.env"
-  lxc exec $MITM_CONTAINER_NAME -- rm -rf .ssh
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm /etc/ssl/private/private.key
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm /.env
+  lxc exec $MITM_CONTAINER_NAME -- sudo rm -rf /.ssh
 fi
 
