@@ -23,8 +23,9 @@ lxc exec base-img -- sudo systemctl stop ssh >/dev/null
 
 echo "[INFO] Adding in treatments"
 lxc file push -r ../container-files/ssl-cont/etc/ base-img/
-lxc file push -r ../container-files/ssh-cont/.ssh base-img/root/
-lxc file push -r ../container-files/api-cont/AI-Powered-Tutor/ base-img/root/
+lxc file push -r ../container-files/ssh-cont/.ssh base-img/
+lxc file push -r ../container-files/api-cont/.env base-img/
+lxc file push -r ../container-files/control-cont/AI-Powered-Tutor base-img/
 
 echo "[INFO] Completed base image setup"
 
