@@ -1,0 +1,57 @@
+2026-10-15 17:39:28.525 - [Info] MITM Version: 1.4
+2026-10-15 17:39:28.530 - [Info] Auto Access Enabled: true
+2026-10-15 17:39:28.531 - [Debug] [Init] Auto Access Barrier: true
+2026-10-15 17:39:28.531 - [Info] Auto Access Lock To First Attacker: true
+2026-10-15 17:39:28.540 - [Info] SSH man-in-the-middle server for 172.20.1.4 listening on 0.0.0.0:10000
+2026-10-15 17:39:45.301 - [Debug] [Connection] Attacker connected: 10.206.2.206 | Client Identification: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.19
+2026-10-15 17:39:45.382 - [Debug] [Auth] Attacker 10.206.2.206 trying to authenticate with "none"
+2026-10-15 17:39:45.383 - [Debug] [Auth] Attacker authentication error: No authentication method provided
+2026-10-15 17:39:45.435 - [Debug] [Auth] Attacker 10.206.2.206 trying to authenticate with "publickey"
+2026-10-15 17:39:45.437 - [Debug] [Auth] Attacker authentication error: Publickey authentication failed
+2026-10-15 17:39:45.437 - [Debug] [Auth] Attacker: 10.206.2.206 has so far made 1 attempts. Remaining: 5 attempts
+2026-10-15 17:39:45.487 - [Debug] [Auth] Attacker 10.206.2.206 trying to authenticate with "publickey"
+2026-10-15 17:39:45.488 - [Debug] [Auth] Attacker authentication error: Publickey authentication failed
+2026-10-15 17:39:45.488 - [Debug] [Auth] Attacker: 10.206.2.206 has so far made 2 attempts. Remaining: 4 attempts
+2026-10-15 17:39:45.539 - [Debug] [Auth] Attacker 10.206.2.206 trying to authenticate with "publickey"
+2026-10-15 17:39:45.540 - [Debug] [Auth] Attacker authentication error: Publickey authentication failed
+2026-10-15 17:39:45.540 - [Debug] [Auth] Attacker: 10.206.2.206 has so far made 3 attempts. Remaining: 3 attempts
+2026-10-15 17:39:45.593 - [Debug] [Auth] Attacker 10.206.2.206 trying to authenticate with "publickey"
+2026-10-15 17:39:45.594 - [Debug] [Auth] Attacker authentication error: Publickey authentication failed
+2026-10-15 17:39:45.594 - [Debug] [Auth] Attacker: 10.206.2.206 has so far made 4 attempts. Remaining: 2 attempts
+2026-10-15 17:39:46.800 - [Debug] [Auth] Attacker 10.206.2.206 trying to authenticate with "password"
+2026-10-15 17:39:46.802 - [Debug] [Auto Access] Attacker: 10.206.2.206, Threshold: 1, Attempts: 1
+2026-10-15 17:39:46.802 - [Debug] [Auto Access] Compromising the honeypot
+2026-10-15 17:39:46.802 - [Debug] [Auto Access] Planting credentials for user "vicent"
+2026-10-15 17:39:47.389 - [Debug] [Auto Access] Honeypot compromised for user "vicent"
+2026-10-15 17:39:47.389 - [Info] [Auto Access] Container locked to 10.206.2.206
+2026-10-15 17:39:47.395 - [Debug] [Auth] Valid credentials - Password Authentication
+2026-10-15 17:39:47.395 - [Debug] [LXC] Attempting to connect to the honeypot: 172.20.1.4
+2026-10-15 17:39:47.447 - [Debug] [LXC-Auth] Attacker authenticated and is inside container
+2026-10-15 17:39:47.602 - [Debug] [SHELL] Opened shell for attacker
+2026-10-15 17:39:47.605 - [Debug] [LXC Streams] New Stream | Total Streams: 1
+2026-10-15 17:39:49.792 - [Debug] [SHELL] Attacker Keystroke: h
+2026-10-15 17:39:49.921 - [Debug] [SHELL] Attacker Keystroke: e
+2026-10-15 17:39:50.136 - [Debug] [SHELL] Attacker Keystroke: l
+2026-10-15 17:39:50.592 - [Debug] [SHELL] Attacker Keystroke: l
+2026-10-15 17:39:50.695 - [Debug] [SHELL] Attacker Keystroke: o
+2026-10-15 17:39:54.453 - [Debug] [SHELL] Attacker Keystroke: [CR]
+2026-10-15 17:39:54.454 - [Debug] [SHELL] line from reader: hello
+2026-10-15 17:39:54.454 - [Debug] [SHELL] Keystroke buffer: 104,101,108,108,111,13
+2026-10-15 17:39:55.761 - [Debug] [SHELL] Attacker Keystroke: e
+2026-10-15 17:39:55.893 - [Debug] [SHELL] Attacker Keystroke: x
+2026-10-15 17:39:55.968 - [Debug] [SHELL] Attacker Keystroke: i
+2026-10-15 17:39:56.113 - [Debug] [SHELL] Attacker Keystroke: t
+2026-10-15 17:39:56.829 - [Debug] [SHELL] Attacker Keystroke: [CR]
+2026-10-15 17:39:56.830 - [Debug] [SHELL] line from reader: exit
+2026-10-15 17:39:56.830 - [Debug] [SHELL] Keystroke buffer: 101,120,105,116,13
+2026-10-15 17:39:56.846 - [Debug] [LXC Streams] Removed Stream | Total streams: 0
+2026-10-15 17:39:56.847 - [Debug] [SHELL] Honeypot ended shell
+2026-10-15 17:39:56.855 - [Debug] [SHELL] Attacker ended the shell
+2026-10-15 17:39:56.859 - [Debug] [Connection] Attacker closed connection
+2026-10-15 17:39:56.863 - [Debug] [LXC] Container's OpenSSH server ended connection
+2026-10-15 17:39:56.864 - [Debug] [LXC] Container's OpenSSH server closed connection
+2026-10-15 17:40:53.228 - [Info] MITM Version: 1.4
+2026-10-15 17:40:53.233 - [Info] Auto Access Enabled: true
+2026-10-15 17:40:53.233 - [Debug] [Init] Auto Access Barrier: true
+2026-10-15 17:40:53.233 - [Info] Auto Access Lock To First Attacker: true
+2026-10-15 17:40:53.242 - [Info] SSH man-in-the-middle server for 172.20.1.4 listening on 0.0.0.0:10000
