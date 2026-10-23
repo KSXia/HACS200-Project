@@ -1,41 +1,51 @@
 #!/bin/bash
 
-echo -n "Update MITM config files? y/n"
+echo -n "Update MITM config files? (y/n): "
 read input
 if [[ "$input" == "y" ]]; then
   echo -n "Updating MITM config files... "
-  ./mitm/create.bash
+  cd mitm
+  ./create.bash
+  cd ..
   echo "done"
 fi
 
-echo -n "Update iptables rules? y/n"
+echo -n "Update iptables rules? (y/n): "
 read input
 if [[ "$input" == "y" ]]; then
   echo -n "Updating iptables rules... "
-  ./ipconf/create.bash
+  cd ipconf
+  ./create.bash
+  cd ..
   echo "done"
 fi
 
-echo -n "Update apply_treatment.bash? y/n"
+echo -n "Update apply_treatment.bash? (y/n): "
 read input
 if [[ "$input" == "y" ]]; then
   echo -n "Updating apply_treatment.bash... "
-  ./recycling-scripts/create.bash
+  cd recycling-scripts
+  ./create.bash
+  cd ..
   echo "done"
 fi
 
-echo -n "Update profiles? y/n"
+echo -n "Update profiles? (y/n): "
 read input
 if [[ "$input" == "y" ]]; then
   echo -n "Updating profiles... "
-  ./profiles/create.bash
+  cd profiles
+  ./create.bash
+  cd ..
   echo "done"
 fi
 
-echo -n "Update base image? y/n"
+echo -n "Update base image? (y/n): "
 read input
 if [[ "$input" == "y" ]]; then
   echo -n "Updating base image... "
-  ./img-creation-scripts/create.bash
+  cd img-creation-scripts
+  ./create.bash
+  cd ..
   echo "done"
 fi
