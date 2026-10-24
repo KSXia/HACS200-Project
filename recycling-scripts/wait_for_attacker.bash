@@ -42,10 +42,19 @@ done
 echo "[!] Attacker has entered the container"
 
 left=0
+time_entered=$(date +%s)
 
 # Check if attacker has exited container
 while [[ "$left" == "0" ]]
 do
+  time_now=$(date +%s)
+  time_elapsed=$(( $time_now - $time_entered ))
+  if [[ $time_elapsed -gt 300 ]]; then
+    lxc exec $container -- sudo systemctl stop sshd
+    lxc exec $container -- sudo pkill sshd
+    echo "[!] Timeout occurred, kicking out attacker"
+    break
+  fi
   left=$(cat .logs/$container.log | grep "Attacker closed connection" | wc -l)
   wait_or_quit 0.1
 done
