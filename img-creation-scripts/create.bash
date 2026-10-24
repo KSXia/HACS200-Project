@@ -2,7 +2,7 @@
 
 if [[ $# -ne 0 ]]
 then
-  echo "[Usage]: ./create_base_img.sh"
+  echo "[Usage]: ./create.bash"
   exit 1
 fi
 
@@ -21,9 +21,11 @@ lxc exec base-img -- bash -c "sudo echo PubkeyAuthentication no >> /etc/ssh/sshd
 lxc exec base-img -- bash -c "sudo echo PermitRootLogin yes >> /etc/ssh/sshd_config"
 lxc exec base-img -- sudo systemctl stop ssh >/dev/null
 
-echo "[INFO] Creating git repository"
-# ---TODO--- 
-# Implement code to create a fake git repo
+echo "[INFO] Adding in treatments"
+lxc file push -r ../container-files/ssl-cont/etc/ base-img/
+lxc file push -r ../container-files/ssh-cont/.ssh base-img/
+lxc file push -r ../container-files/api-cont/.env base-img/
+lxc file push -r ../container-files/control-cont/AI-Powered-Tutor base-img/
 
 echo "[INFO] Completed base image setup"
 

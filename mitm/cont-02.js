@@ -4,7 +4,7 @@ module.exports = {
     local: false,
     debug : true,
     container : {
-      ipAddress: '172.20.1.2',
+        ipAddress: '172.20.1.2',
         name: 'cont-02',
         mountPath: {
             prefix: '/var/snap/lxd/common/mntns/var/snap/lxd/common/lxd/storage-pools/default/containers/',
@@ -19,7 +19,7 @@ module.exports = {
     server : {
         maxAttemptsPerConnection: 6,
         listenIP : '0.0.0.0',
-        listenPort: 10000,
+        listenPort: 10002,
         identifier : 'SSH-2.0-OpenSSH_6.6.1p1 Ubuntu-2ubuntu2',
         bannerFile : ''
     },
@@ -27,6 +27,7 @@ module.exports = {
         enabled: true,
         cacheSize : 5000,
         lockToFirstAttacker: true,
+        postAccessScript: '/root/honeypots/MITM/mitm/apply_treatment.bash',
         barrier: {
             normalDist: {
                 enabled: false,
