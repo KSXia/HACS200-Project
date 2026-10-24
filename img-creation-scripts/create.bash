@@ -21,6 +21,10 @@ lxc exec base-img -- bash -c "sudo echo PubkeyAuthentication no >> /etc/ssh/sshd
 lxc exec base-img -- bash -c "sudo echo PermitRootLogin yes >> /etc/ssh/sshd_config"
 lxc exec base-img -- sudo systemctl stop ssh >/dev/null
 
+# Stop cloud-init from resetting the hostname to the container name on boot
+# (creation.bash sets the real hostname per container)
+lxc exec base-img -- bash -c "echo 'preserve_hostname: true' > /etc/cloud/cloud.cfg.d/99-preserve-hostname.cfg"
+
 echo "[INFO] Adding in treatments"
 lxc file push -r ../container-files/ssl-cont/etc/ base-img/
 lxc file push -r ../container-files/ssh-cont/.ssh base-img/

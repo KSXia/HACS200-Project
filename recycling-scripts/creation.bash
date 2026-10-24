@@ -25,6 +25,12 @@ else
     echo -n "launching container.. "
     lxc launch base-img "$container" -p "$profile" 1> /dev/null
     echo "done"
+    # LXD sets the hostname to the container name on create, so override it before
+    # the snapshot is taken (the snapshot keeps it across soft resets)
+    echo -n "setting hostname.. "
+    lxc exec "$container" -- cloud-init status --wait 1> /dev/null
+    lxc exec "$container" -- bash -c "echo my-workstation > /etc/hostname && hostname my-workstation && sed -i \"s/\\b$container\\b/my-workstation/g\" /etc/hosts"
+    echo "done"
     echo -n "creating base snapshot.. "
     lxc snapshot "$container" snapshot-base
     echo "done"
