@@ -12,6 +12,7 @@ container="cont-$1"
 mitmp="mitm-$1"
 
 TREATMENTS=("control" "ssh" "ssl" "api")
+begin_recycle=0
 
 # ignore keyboard interrupts
 trap : INT
@@ -33,11 +34,15 @@ while true; do
     echo "random treatment selected: $random_treatment"
     ./creation.bash "$profile" "$container" "$mitmp"
 
+    end_recycle=$(date +%s)
+    [[ $begin_recycle != 0 ]] && echo "Recycled in $(($end_recycle - $begin_recycle)) seconds"
+
     ./wait_for_attacker.bash "$container" "$mitmp"
     if (($? == 11)); then
         exit 11
     fi
 
+    begin_recycle=$(date +%s)
     # Make new directory if there is no directory for the current date
     date=$(date +%Y-%m-%d)
     if ! ls data/$date &>/dev/null; then
