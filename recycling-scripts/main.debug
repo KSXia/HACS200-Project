@@ -42,7 +42,7 @@ while true; do
       chosen_treatment=$(( $treat_input - 1 ))
       random_treatment=${TREATMENTS[$chosen_treatment]}
     fi
-    echo $random_treatment > treatment.txt
+    echo $random_treatment > .treatment.txt
 
     echo "random treatment selected: $random_treatment"
     ./creation.bash "$profile" "$container" "$mitmp"

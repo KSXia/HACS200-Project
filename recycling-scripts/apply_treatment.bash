@@ -6,7 +6,7 @@ if [ -z "$MITM_HOME_DIR" ]; then
     exit 1
 fi
 
-treatment=$(cat treatment.txt)
+treatment=$(cat .treatment.txt)
 
 lxc exec $MITM_CONTAINER_NAME -- sudo mv -f /AI-Powered-Tutor -- "$MITM_HOME_DIR/"
 
