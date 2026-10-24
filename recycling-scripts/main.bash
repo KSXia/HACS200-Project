@@ -55,6 +55,6 @@ while true; do
         exit 11
     fi
 
-    ./extract_data.bash "$container" "$random_treatment" "log-$container" "data/$date/mitm-$log_num.log"
+    ./extract_data.bash "$container" "$random_treatment" ".logs/$container.log" "data/$date/mitm-$log_num.log"
     ./recycle_container.bash "$container" "$mitmp"
 done

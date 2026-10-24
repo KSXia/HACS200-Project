@@ -33,5 +33,5 @@ fi
 echo -n "starting MITM process.. "
 # truncate old log
 : > "log-$container"
-sudo screen -L -Logfile "log-$container" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
+sudo screen -L -Logfile ".logs/$container.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
 echo "done"
