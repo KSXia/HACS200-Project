@@ -40,7 +40,7 @@ while true; do
       random_treatment=${TREATMENTS[$random_index]}
     else
       chosen_treatment=$(( $treat_input - 1 ))
-      random_treament=${TREATMENTS[$chosen_treatment]}
+      random_treatment=${TREATMENTS[$chosen_treatment]}
     fi
     echo $random_treatment > treatment.txt
 
