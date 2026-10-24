@@ -28,35 +28,25 @@ wait_or_quit() {
 
 trap quit_now INT
 
-# todo!() figure out why this `sleep 10` is here
-echo "todo!() why sleep 10"
-sleep 10
-
-# ---TODO---
-echo "NEED TO CHANGE THIS TO INSTEAD DETECT CONNECTIONS VIA MITM LOG"
-past_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`
-new_user=`lxc exec "$container" -- sudo last < /dev/null | head -n 1`
-
 echo "[Setup]: Setup complete, waiting for attacker to connect..."
 echo "[Input]: Type 'q' to exit process and delete container"
 
 # Check for new user
-while [[ "$past_user" == "$new_user" ]]
+connected=0
+while [[ "$connected" == "0"  ]]
 do
-  new_user=$(lxc exec "$container" -- sudo last < /dev/null | head -n 1)
+  connected=$(cat .logs/$container.log | grep "Attacker authenticated and is inside container" | wc -l)
   wait_or_quit 0.1
 done
 
 echo "[!] Attacker has entered the container"
 
-num_online=1
+left=0
 
 # Check if attacker has exited container
-while [[ $num_online -gt 0 ]]
+while [[ "$left" == "0" ]]
 do
-  # ---TODO---
-  echo "Change this to base whether the attacker is still connected on the MITM logs"
-  num_online=`lxc exec "$container" -- who < /dev/null | wc -l`
+  left=$(cat .logs/$container.log | grep "Attacker closed connection" | wc -l)
   wait_or_quit 0.5
 done
 
