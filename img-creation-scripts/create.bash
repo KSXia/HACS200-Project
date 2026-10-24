@@ -27,6 +27,11 @@ lxc file push -r ../container-files/ssh-cont/.ssh base-img/
 lxc file push -r ../container-files/api-cont/.env base-img/
 lxc file push -r ../container-files/control-cont/AI-Powered-Tutor base-img/
 
+# A nested .git can't be committed to this repo, so build the fake git history in the image
+echo "[INFO] Initializing fake git repo"
+GIT="git -c user.name='Alex Morgan' -c user.email='alex.morgan@example.com'"
+lxc exec base-img -- bash -c "cd /AI-Powered-Tutor && git init -q   && git add README.md .gitignore .env.example requirements.txt Makefile Dockerfile config.py   && GIT_AUTHOR_DATE='2025-09-02T14:12:09' GIT_COMMITTER_DATE='2025-09-02T14:12:09' $GIT commit -q -m 'Initial project skeleton'   && git add tutor app.py wsgi.py migrations   && GIT_AUTHOR_DATE='2025-09-09T10:41:30' GIT_COMMITTER_DATE='2025-09-09T10:41:30' $GIT commit -q -m 'Add ask and practice endpoints'   && git add -A   && GIT_AUTHOR_DATE='2025-09-16T16:05:52' GIT_COMMITTER_DATE='2025-09-16T16:05:52' $GIT commit -q -m 'Add tests and API docs'"
+
 echo "[INFO] Completed base image setup"
 
 echo "[INFO] Stopping container"
