@@ -1,0 +1,3 @@
+.treatment.txt
+recycling-scripts/.logs/*
+!recycling-scripts/.logs/.gitkeep
