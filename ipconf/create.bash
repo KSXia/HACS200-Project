@@ -1,3 +1,3 @@
 #!/bin/bash
 
-cp ipconf /root/honeypots/
+sudo cp ipconf /root/honeypots/
