@@ -47,7 +47,7 @@ left=0
 while [[ "$left" == "0" ]]
 do
   left=$(cat .logs/$container.log | grep "Attacker closed connection" | wc -l)
-  wait_or_quit 0.5
+  wait_or_quit 0.1
 done
 
 echo "[!] Attacker has left container"
