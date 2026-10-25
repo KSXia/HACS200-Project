@@ -66,4 +66,5 @@ ip=$(sudo cat "/root/MITM_data/logins/$1.txt" | tail -n 1 | cut -d";" -f2)
   echo "$ip"
   echo "$t_delta"
   echo "$treatment"
+  echo "$container"
 } >> "$output_fp"
