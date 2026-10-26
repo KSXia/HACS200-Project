@@ -33,7 +33,6 @@ while true; do
 
     echo "random treatment selected: $random_treatment"
 
-    mkdir $output_fp
     logfp="../data"
 
     ./creation.bash "$profile" "$container" "$mitmp" "$logfp"
@@ -60,7 +59,8 @@ while true; do
     fi
     log_num=$(ls ../data/$container/$date | wc -l)
     output_fp="../data/$container/$date/$log_num"
-
+    mkdir $output_fp
+    
     ./extract_data.bash "$container" "$random_treatment" "$logfp/.$container.log" "$output_fp"
     ./recycle_container.bash "$container" "$mitmp"
 done
