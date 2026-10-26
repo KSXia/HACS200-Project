@@ -32,6 +32,6 @@ trap quit_now INT
 # Check if MITM log has been completely recorded
 end_of_file=0
 while [[ $end_of_file -eq 0 ]]; do
-  end_of_file=$(grep -c "Container's OpenSSH server closed connection" "$logfp/$container.log")
+  end_of_file=$(grep -c "Container's OpenSSH server closed connection" "$logfp/.$container.log")
   wait_or_quit 0.1
 done
