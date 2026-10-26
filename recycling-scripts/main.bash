@@ -35,11 +35,11 @@ while true; do
 
     # Make new directory if there is no directory for the current date
     date=$(date +%Y-%m-%d)
-    if ! ls data/$container/$date &>/dev/null; then
-      mkdir data/$container/$date
+    if ! ls ../data/$container/$date &>/dev/null; then
+      mkdir ../data/$container/$date
     fi
-    log_num=$(ls data/$container/$date | wc -l)
-    logfp="data/$container/$date/$log_num"
+    log_num=$(ls ../data/$container/$date | wc -l)
+    logfp="../data/$container/$date/$log_num"
     mkdir "$logfp"
 
     ./creation.bash "$profile" "$container" "$mitmp" "$logfp"
