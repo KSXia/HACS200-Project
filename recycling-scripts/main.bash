@@ -32,29 +32,33 @@ while true; do
     echo $random_treatment > .treatment.txt
 
     echo "random treatment selected: $random_treatment"
-    ./creation.bash "$profile" "$container" "$mitmp"
+
+    # Make new directory if there is no directory for the current date
+    date=$(date +%Y-%m-%d)
+    if ! ls data/$container/$date &>/dev/null; then
+      mkdir data/$container/$date
+    fi
+    log_num=$(ls data/$container/$date | wc -l)
+    logfp="data/$container/$date/$log_num"
+    mkdir "$logfp"
+
+    ./creation.bash "$profile" "$container" "$mitmp" "$logfp"
 
     end_recycle=$(date +%s)
     [[ $begin_recycle != 0 ]] && echo "Recycled in $(($end_recycle - $begin_recycle)) seconds"
 
-    ./wait_for_attacker.bash "$container" "$mitmp"
+    ./wait_for_attacker.bash "$container" "$mitmp" "$logfp"
     if (($? == 11)); then
         exit 11
     fi
 
     begin_recycle=$(date +%s)
-    # Make new directory if there is no directory for the current date
-    date=$(date +%Y-%m-%d)
-    if ! ls data/$date &>/dev/null; then
-      mkdir data/$date
-    fi
-    log_num=$(ls data/$date | wc -l)
 
-    ./wait_for_log.bash "$container" "$mitmp"
+    ./wait_for_log.bash "$container" "$mitmp" "$logfp"
     if (($? == 11)); then
         exit 11
     fi
 
-    ./extract_data.bash "$container" "$random_treatment" ".logs/$container.log" "data/$date/mitm-$log_num.log"
+    ./extract_data.bash "$container" "$random_treatment" "$logfp/mitm.log" "$logfp"
     ./recycle_container.bash "$container" "$mitmp"
 done

@@ -3,14 +3,15 @@
 # [profile] is the unique profile name associated with an IP address
 # [container] is the unique container name
 # [mitmp] is the unique MITM process name
-if [[ $# -ne 3 ]]; then
-    echo "usage: ./creation.bash [profile] [container] [mitmp]"
+if [[ $# -ne 4 ]]; then
+    echo "usage: ./creation.bash [profile] [container] [mitmp] [log file path]"
     exit 1
 fi
 
 profile="$1"
 container="$2"
 mitmp="$3"
+logfp="$4"
 mitmconf="${container}.js"
 
 echo "creating MITM container \"$container\":"
@@ -37,7 +38,5 @@ else
 fi
 
 echo -n "starting MITM process.. "
-# truncate old log
-sudo rm ".logs/$container.log"
-sudo screen -L -Logfile ".logs/$container.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
+sudo screen -L -Logfile "$logfp/mitm.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
 echo "done"
