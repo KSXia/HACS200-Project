@@ -38,7 +38,7 @@ echo "[Input]: Type 'q' to exit process and delete container"
 connected=0
 while [[ "$connected" == "0"  ]]
 do
-  connected=$(cat "$logfp/mitm.log" | grep "Attacker authenticated and is inside container" | wc -l)
+  connected=$(cat "$logfp/$container.log" | grep "Attacker authenticated and is inside container" | wc -l)
   wait_or_quit 0.1
 done
 
@@ -58,7 +58,7 @@ do
     echo "[!] Timeout occurred, kicking out attacker"
     break
   fi
-  left=$(cat "$logfp/mitm.log" | grep "Attacker closed connection" | wc -l)
+  left=$(cat "$logfp/$container.log" | grep "Attacker closed connection" | wc -l)
   wait_or_quit 0.1
 done
 

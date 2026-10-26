@@ -14,57 +14,23 @@ container="$1"
 treatment="$2"
 mitml_fp="$3"
 output_fp="$4"
+mitmd_fp="/root/MITM_data/" # location of internal MITM_data logs
 
 echo "extracting data from MITM container \"$container\" with treatment \"$treatment\":"
 echo "    mitml fp \"$mitml_fp\""
 echo "    output fp \"$output_fp\""
+
+session=$(sudo tail -n 1 $mitmd_fp/logins/$container.txt | sed 's/.*;//g')
+echo "    session ID is $session"
+sudo cp "$mitmd_fp/sessions/$session.gz" $output_fp/session.log.gz
+
 
 if [[ ! -f "$mitml_fp" ]]; then
     echo "mitml file not found"
     exit 1
 fi
 
-# Date and time connected / disconnected (first auth line, last close line)
-t_start=$(grep "\[LXC-Auth\]" "$mitml_fp" | head -n 1 | colrm 24)
-t_end=$(grep "\[LXC\] Container's OpenSSH server closed" "$mitml_fp" | tail -n 1 | colrm 24)
-
-if [[ -z $t_start || -z $t_end ]]; then
-  echo "could not find connect and/or disconnect timestamps in mitml fp \"$mitml_fp\""
-  exit 1
-fi
-
-# Time spent connected (ms)
-ms_start=$(date -d "$t_start" +%s%3N)
-ms_end=$(date -d "$t_end" +%s%3N)
-
-if [[ -z $ms_start || -z $ms_end ]]
-then
-  echo "could not parse timestamps \"$t_start\" and/or \"$t_end\""
-  exit 1
-fi
-
-t_delta=$(( ms_end - ms_start ))
-
-# Number of commands
-num_cmds=$(grep -c "\[SHELL\] line from reader:" "$mitml_fp")
-
-# List of commands
-if [[ $num_cmds -eq 0 ]]; then
-  cmd_list="[]"
-else
-  cmd_list=$(grep "\[SHELL\] line from reader:" "$mitml_fp" | colrm 1 60 | sed 's/,/,,/g' | awk '{sub(/\r$/,""); printf("%s\", \"", $0)} END {print ""}' | sed 's/^/["/' | sed 's/, "$/]/')
-fi
-
-# IP address
-ip=$(sudo cat "/root/MITM_data/logins/$1.txt" | tail -n 1 | cut -d";" -f2)
-
-# Write everything at once so a failure above never leaves a partial record
-{
-  echo "$t_start"
-  echo "$num_cmds"
-  echo "$cmd_list"
-  echo "$ip"
-  echo "$t_delta"
-  echo "$treatment"
-  echo "$container"
-} >> "$output_fp/extracted.log"
+echo "$treatment" > "$output_fp/config"
+# Implement Leave Reason
+# Add attempts.log
+# Add logins.log

@@ -38,5 +38,6 @@ else
 fi
 
 echo -n "starting MITM process.. "
-sudo screen -L -Logfile "$logfp/mitm.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
+sudo rm "$logfp/$container.log"
+sudo screen -L -Logfile "$logfp/.$container.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
 echo "done"

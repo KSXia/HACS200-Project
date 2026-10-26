@@ -39,8 +39,9 @@ while true; do
       mkdir ../data/$container/$date
     fi
     log_num=$(ls ../data/$container/$date | wc -l)
-    logfp="../data/$container/$date/$log_num"
-    mkdir "$logfp"
+    output_fp="../data/$container/$date/$log_num"
+    mkdir $output_fp
+    logfp="../data"
 
     ./creation.bash "$profile" "$container" "$mitmp" "$logfp"
 
@@ -59,6 +60,6 @@ while true; do
         exit 11
     fi
 
-    ./extract_data.bash "$container" "$random_treatment" "$logfp/mitm.log" "$logfp"
+    ./extract_data.bash "$container" "$random_treatment" "$logfp/$container.log" "$output_fp"
     ./recycle_container.bash "$container" "$mitmp"
 done
