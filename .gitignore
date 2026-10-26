@@ -1,5 +1,3 @@
 .treatment.txt
-recycling-scripts/.logs/*
-!recycling-scripts/.logs/.gitkeep
-recycling-scripts/data/*
-!recycling-scripts/data/.gitkeep
+recycling-scripts/data/cont-0*/*
+!recycling-scripts/data/cont-0*/.gitkeep
