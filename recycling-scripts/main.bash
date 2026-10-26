@@ -33,13 +33,6 @@ while true; do
 
     echo "random treatment selected: $random_treatment"
 
-    # Make new directory if there is no directory for the current date
-    date=$(date +%Y-%m-%d)
-    if ! ls ../data/$container/$date &>/dev/null; then
-      mkdir ../data/$container/$date
-    fi
-    log_num=$(ls ../data/$container/$date | wc -l)
-    output_fp="../data/$container/$date/$log_num"
     mkdir $output_fp
     logfp="../data"
 
@@ -59,7 +52,15 @@ while true; do
     if (($? == 11)); then
         exit 11
     fi
+   
+    # Make new directory if there is no directory for the current date
+    date=$(date +%Y-%m-%d)
+    if ! ls ../data/$container/$date &>/dev/null; then
+      mkdir ../data/$container/$date
+    fi
+    log_num=$(ls ../data/$container/$date | wc -l)
+    output_fp="../data/$container/$date/$log_num"
 
-    ./extract_data.bash "$container" "$random_treatment" "$logfp/$container.log" "$output_fp"
+    ./extract_data.bash "$container" "$random_treatment" "$logfp/.$container.log" "$output_fp"
     ./recycle_container.bash "$container" "$mitmp"
 done
