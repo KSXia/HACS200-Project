@@ -52,7 +52,7 @@ while [[ "$left" == "0" ]]
 do
   time_now=$(date +%s)
   time_elapsed=$(( $time_now - $time_entered ))
-  if [[ $time_elapsed -gt 3 ]]; then
+  if [[ $time_elapsed -gt 300 ]]; then
     lxc exec $container -- sudo systemctl stop sshd
     lxc exec $container -- sudo pkill sshd
     echo "[!] Timeout occurred, kicking out attacker"
