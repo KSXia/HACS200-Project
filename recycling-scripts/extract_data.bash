@@ -31,6 +31,7 @@ if [[ ! -f "$mitml_fp" ]]; then
 fi
 
 echo "$treatment" > "$output_fp/config"
+cp "../data/.$container.log" "$output_fp/mitm.log"
 # Implement Leave Reason
 # Add attempts.log
 # Add logins.log
