@@ -7,6 +7,8 @@ if [[ $# -ne 1 ]]; then
     exit 1
 fi
 
+sudo
+
 profile="profile-$1"
 container="cont-$1"
 mitmp="mitm-$1"
@@ -51,7 +53,7 @@ while true; do
     if (($? == 11)); then
         exit 11
     fi
-   
+
     # Make new directory if there is no directory for the current date
     date=$(date +%Y-%m-%d)
     if ! ls ../data/$container/$date &>/dev/null; then
@@ -60,7 +62,7 @@ while true; do
     log_num=$(ls ../data/$container/$date | wc -l)
     output_fp="../data/$container/$date/$log_num"
     mkdir $output_fp
-    
+
     ./extract_data.bash "$container" "$random_treatment" "$logfp/.$container.log" "$output_fp"
     ./recycle_container.bash "$container" "$mitmp"
 done
