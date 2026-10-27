@@ -63,6 +63,6 @@ while true; do
     output_fp="../data/$container/$date/$log_num"
     mkdir $output_fp
 
-    ./extract_data.bash "$container" "$random_treatment" "$logfp/.$container.log" "$output_fp"
+    ./extract_data.bash "$container" "$random_treatment" "$logfp/.$container.log" "$output_fp" "$logfp/.$container.leave_reason"
     ./recycle_container.bash "$container" "$mitmp"
 done

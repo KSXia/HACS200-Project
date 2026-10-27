@@ -29,6 +29,14 @@ wait_or_quit() {
   [[ $key == "q" ]] && quit_now
 }
 
+# Why the attacker left, copied into the session folder by extract_data.bash.
+# Values: "attacker left", "idle timeout", "session timeout"
+leave_reason_fp="$logfp/.$container.leave_reason"
+rm -f "$leave_reason_fp"
+record_leave_reason() {
+  echo "$1" > "$leave_reason_fp"
+}
+
 trap quit_now INT
 
 echo "[Setup]: Setup complete, waiting for attacker to connect..."
@@ -56,9 +64,13 @@ do
     lxc exec $container -- sudo systemctl stop sshd
     lxc exec $container -- sudo pkill sshd
     echo "[!] Timeout occurred, kicking out attacker"
+    record_leave_reason "session timeout"
     break
   fi
   left=$(cat "$logfp/.$container.log" | grep "Attacker closed connection" | wc -l)
+  if [[ "$left" != "0" ]]; then
+    record_leave_reason "attacker left"
+  fi
   wait_or_quit 0.1
 done
 

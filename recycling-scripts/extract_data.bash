@@ -4,9 +4,10 @@
 # [treatment] is the name of the treatment
 # [mitml fp] is the MITM log file path
 # [output fp] is the output file path
-if [[ $# -ne 4 ]]
+# [leave reason fp] is the file wait_for_attacker.bash wrote the leave reason to
+if [[ $# -ne 5 ]]
 then
-    echo "usage: ./extract_data.bash [container] [treatment] [mitml fp] [output fp]"
+    echo "usage: ./extract_data.bash [container] [treatment] [mitml fp] [output fp] [leave reason fp]"
     exit 1
 fi
 
@@ -14,6 +15,7 @@ container="$1"
 treatment="$2"
 mitml_fp="$3"
 output_fp="$4"
+leave_reason_fp="$5"
 mitmd_fp="/root/MITM_data/" # location of internal MITM_data logs
 
 echo "extracting data from MITM container \"$container\" with treatment \"$treatment\":"
@@ -32,6 +34,11 @@ fi
 
 echo "$treatment" > "$output_fp/config"
 cp "../data/.$container.log" "$output_fp/mitm.log"
-# Implement Leave Reason
+if [[ -s "$leave_reason_fp" ]]; then
+    cp "$leave_reason_fp" "$output_fp/leave_reason"
+else
+    echo "    leave reason file \"$leave_reason_fp\" not found, recording unknown"
+    echo "unknown" > "$output_fp/leave_reason"
+fi
 # Add attempts.log
 # Add logins.log
