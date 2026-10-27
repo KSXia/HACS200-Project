@@ -7,7 +7,7 @@ if [[ $# -ne 1 ]]; then
     exit 1
 fi
 
-sudo
+sudo echo -n
 
 profile="profile-$1"
 container="cont-$1"
