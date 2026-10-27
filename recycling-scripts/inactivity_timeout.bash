@@ -13,8 +13,10 @@ fi
 mitml_fp="$1"
 timeout="$2"
 
-# tail --pid ends the tail shortly after this script returns, which would otherwise leave
-# tail and grep running (tail -F never ends by itself)
-tail -n 0 -F --pid=$$ "$mitml_fp" 2> /dev/null \
-    | grep --line-buffered "Attacker Keystroke" \
-    | ./stdin_timeout.bash "$timeout" 
+# The keystroke feed is a process substitution instead of a pipe: bash waits for every command
+# in a pipe, and tail -F never ends, so this script would never return when stdin_timeout does.
+# tail --pid ends the tail shortly after this script returns.
+./stdin_timeout.bash "$timeout" < <(
+    tail -n 0 -F --pid=$$ "$mitml_fp" 2> /dev/null \
+        | grep --line-buffered "Attacker Keystroke"
+)
