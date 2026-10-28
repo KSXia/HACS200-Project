@@ -40,5 +40,8 @@ else
     echo "    leave reason file \"$leave_reason_fp\" not found, recording unknown"
     echo "unknown" > "$output_fp/leave_reason"
 fi
+
 # Add attempts.log
 # Add logins.log
+cp "/root/MITM_data/logins/$container.txt" "$output_fp/logins.log"
+cp "/root/MITM_data/login_attempts/$container.txt" "$output_fp/login_attempts.log"
