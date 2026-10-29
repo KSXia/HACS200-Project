@@ -2,3 +2,4 @@
 data/cont-0*/*
 !data/cont-0*/.gitkeep
 data/.*
+.slack_webhook
