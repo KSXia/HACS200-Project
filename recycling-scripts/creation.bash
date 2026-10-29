@@ -40,4 +40,6 @@ fi
 echo -n "starting MITM process.. "
 sudo rm "$logfp/.$container.log"
 sudo screen -L -Logfile "$logfp/.$container.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
+sudo screen -L -Logfile "$logfp/.$container.logins" -dmS "$container-logins" tail -F -n 0 "/root/MITM_data/logins/$container.txt"
+sudo screen -L -Logfile "$logfp/.$container.attempts" -dmS "$container-attempts" tail -F -n 0 "/root/MITM_data/login_attempts/$container.txt"
 echo "done"

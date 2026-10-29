@@ -19,4 +19,6 @@ lxc delete "$container" > /dev/null
 echo "done"
 echo -n "stopping mitmp.. "
 sudo screen -S "$mitmp" -X quit > /dev/null
+sudo screen -S "$container-logins" -X quit > /dev/null
+sudo screen -S "$container-attempts" -X quit > /dev/null
 echo "done"
