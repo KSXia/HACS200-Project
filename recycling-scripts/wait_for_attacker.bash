@@ -54,10 +54,10 @@ echo "[Setup]: Setup complete, waiting for attacker to connect..."
 echo "[Input]: Type 'q' to exit process and delete container"
 
 # Check for new user
-connected=0
-while [[ "$connected" == "0"  ]]
-do
-  connected=$(cat "$logfp/.$container.log" | grep "Attacker authenticated and is inside container" | wc -l)
+stored_logins_lines=$(wc -l "/root/MITM_data/logins/$container.txt")
+logins_lines=$(wc -l "/root/MITM_data/logins/$container.txt")
+while (( stored_logins_lines = logins_lines )); do
+  logins_lines=$(wc -l "/root/MITM_data/logins/$container.txt")
   wait_or_quit 0.1
 done
 
