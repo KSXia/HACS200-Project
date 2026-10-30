@@ -7,8 +7,6 @@ if [[ $# -ne 1 ]]; then
     exit 1
 fi
 
-sudo echo -n
-
 profile="profile-$1"
 container="cont-$1"
 mitmp="mitm-$1"
@@ -31,7 +29,7 @@ while true; do
     random_index=$((random_number % ${#TREATMENTS[@]}))
     # index into list of treatments to select a treatment
     random_treatment=${TREATMENTS[$random_index]}
-    echo $random_treatment > .treatment.txt
+    echo $random_treatment > .$container-treatment.txt
 
     echo "random treatment selected: $random_treatment"
 
