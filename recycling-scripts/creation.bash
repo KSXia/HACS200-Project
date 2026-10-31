@@ -38,8 +38,7 @@ else
 fi
 
 echo -n "starting MITM process.. "
-sudo rm "$logfp/.$container.log"
-sudo screen -L -Logfile "$logfp/.$container.log" -dmS "$mitmp" sudo node /root/honeypots/MITM/mitm/index.js "$mitmconf"
+sudo screen -dmS "$mitmp" bash -c "sudo node /root/honeypots/MITM/mitm/index.js $mitmconf 2>&1 | tee /home/aces/production/data/.$container.log"
 sudo screen -L -Logfile "$logfp/.$container.logins" -dmS "$container-logins" tail -F -n 0 "/root/MITM_data/logins/$container.txt"
 sudo screen -L -Logfile "$logfp/.$container.attempts" -dmS "$container-attempts" tail -F -n 0 "/root/MITM_data/login_attempts/$container.txt"
 echo "done"
