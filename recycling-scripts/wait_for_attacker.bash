@@ -17,6 +17,8 @@ logfp="$3"
 
 # seconds the attacker may go without typing before being kicked
 IDLE_LIMIT=${IDLE_LIMIT:-60}
+# seconds MITM may stay locked to an attacker who never got into the container
+STUCK_LIMIT=${STUCK_LIMIT:-30}
 
 # Stop the timeout timers; wait_timeout.bash kills everything it started when it is killed
 timeout_job=""
@@ -56,8 +58,20 @@ echo "[Input]: Type 'q' to exit process and delete container"
 # Check for new user
 stored_logins_lines=$(wc -l < "/root/MITM_data/logins/$container.txt")
 logins_lines=$(wc -l < "/root/MITM_data/logins/$container.txt")
+locked_since=""
 while (( stored_logins_lines == logins_lines )); do
   logins_lines=$(wc -l < "/root/MITM_data/logins/$container.txt")
+  # MITM locks the container to an attacker before connecting them to it. If that connection
+  # fails, the lock stays and nobody can log in again, so give up (exit 12, main.bash recycles)
+  # if a lock is not followed by the attacker getting inside within STUCK_LIMIT seconds
+  if grep -q "Container locked to" "$logfp/.$container.log" &&
+     ! grep -q "Attacker authenticated and is inside container" "$logfp/.$container.log"; then
+    [[ -z "$locked_since" ]] && locked_since=$(date +%s)
+    if (( $(date +%s) - locked_since > STUCK_LIMIT )); then
+      echo "[!] MITM is locked to an attacker who never got in; recycling the container"
+      exit 12
+    fi
+  fi
   wait_or_quit 0.1
 done
 

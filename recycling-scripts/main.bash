@@ -14,6 +14,14 @@ mitmp="mitm-$1"
 TREATMENTS=("control" "ssh" "ssl" "api")
 begin_recycle=0
 
+# Recycle the container; if that fails, delete it so creation.bash launches a fresh one
+recycle_or_reset() {
+    if ! ./recycle_container.bash "$container" "$mitmp"; then
+        echo "recycle failed, deleting \"$container\" so the next loop starts from a fresh container"
+        ./delete_container.bash "$container" "$mitmp"
+    fi
+}
+
 # ignore keyboard interrupts
 trap : INT
 
@@ -37,14 +45,26 @@ while true; do
 
     logfp="../data"
 
-    ./creation.bash "$profile" "$container" "$mitmp" "$logfp"
+    # creation.bash fails if the container's sshd never comes up; start over with a fresh container
+    if ! ./creation.bash "$profile" "$container" "$mitmp" "$logfp"; then
+        echo "creation failed, deleting \"$container\" and trying again"
+        ./delete_container.bash "$container" "$mitmp"
+        sleep 10
+        continue
+    fi
 
     end_recycle=$(date +%s)
     [[ $begin_recycle != 0 ]] && echo "Recycled in $(($end_recycle - $begin_recycle)) seconds"
 
     ./wait_for_attacker.bash "$container" "$mitmp" "$logfp"
-    if (($? == 11)); then
+    status=$?
+    if ((status == 11)); then
         exit 11
+    fi
+    # 12: MITM got stuck locked to an attacker who never got in; nothing to extract, just recycle
+    if ((status == 12)); then
+        recycle_or_reset
+        continue
     fi
 
     begin_recycle=$(date +%s)
@@ -64,5 +84,5 @@ while true; do
     mkdir $output_fp
 
     ./extract_data.bash "$container" "$random_treatment" "$logfp" "$output_fp"
-    ./recycle_container.bash "$container" "$mitmp"
+    recycle_or_reset
 done

@@ -12,10 +12,11 @@ mitmp="$2"
 
 echo "deleting container \"$container\""
 echo -n "stopping container.. "
-lxc stop "$container" > /dev/null
+# lxc stop waits forever by default, so force the stop if it takes more than 30 seconds
+lxc stop "$container" --timeout 30 > /dev/null 2>&1 || lxc stop "$container" --force > /dev/null
 echo "done"
 echo -n "deleting container.. "
-lxc delete "$container" > /dev/null
+lxc delete "$container" --force > /dev/null
 echo "done"
 echo -n "stopping mitmp.. "
 sudo screen -S "$mitmp" -X quit > /dev/null

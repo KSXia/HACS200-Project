@@ -37,6 +37,13 @@ else
     echo "done"
 fi
 
+# Never start MITM before the container's sshd is up (see wait_for_sshd.bash). Exits 1 without
+# starting MITM if it does not come up, and main.bash then starts over with a fresh container.
+if ! ./wait_for_sshd.bash "$container"; then
+    echo "not starting MITM: \"$container\" sshd is not reachable"
+    exit 1
+fi
+
 echo -n "starting MITM process.. "
 sudo screen -dmS "$mitmp" bash -c "sudo node /root/honeypots/MITM/mitm/index.js $mitmconf 2>&1 | tee $logfp/.$container.log"
 # sudo screen -L -Logfile "$logfp/.$container.logins" -dmS "$container-logins" tail -F -n 0 "/root/MITM_data/logins/$container.txt"
