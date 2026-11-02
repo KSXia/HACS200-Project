@@ -1,5 +1,5 @@
 #!/bin/bash
-# profile-02: SSH key honeypot (key file in a .ssh folder), static IP 172.16.1.2
+# profile-02: static IP 172.20.1.2 for cont-02 (the treatment is picked at random each session)
 PROFILE="profile-02"
 IP="172.20.1.2"
 

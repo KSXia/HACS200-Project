@@ -1,5 +1,5 @@
 #!/bin/bash
-# profile-03: dummy git repo honeypot (.env file), static IP 172.16.1.3
+# profile-03: static IP 172.20.1.3 for cont-03 (the treatment is picked at random each session)
 PROFILE="profile-03"
 IP="172.20.1.3"
 

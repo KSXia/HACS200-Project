@@ -1,8 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-if [ -z "$MITM_HOME_DIR" ]; then
-    printf 'no home directory for %q\n' "$MITM_USERNAME" >&2
+# ${...:-} so set -u does not abort before the message is printed
+if [ -z "${MITM_HOME_DIR:-}" ]; then
+    printf 'no home directory for %q\n' "${MITM_USERNAME:-}" >&2
     exit 1
 fi
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# profile-01: control honeypot (no key files), static IP 172.16.1.1
+# profile-01: static IP 172.20.1.1 for cont-01 (the treatment is picked at random each session)
 PROFILE="profile-01"
 IP="172.20.1.1"
 

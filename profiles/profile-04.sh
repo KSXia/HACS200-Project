@@ -1,5 +1,5 @@
 #!/bin/bash
-# profile-04: SSL key honeypot, static IP 172.16.1.4
+# profile-04: static IP 172.20.1.4 for cont-04 (the treatment is picked at random each session)
 PROFILE="profile-04"
 IP="172.20.1.4"
 
