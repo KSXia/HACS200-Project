@@ -27,3 +27,12 @@ sudo screen -S "$mitmp" -X quit > /dev/null
 # sudo screen -S "$container-logins" -X quit
 # sudo screen -S "$container-attempts" -X quit
 echo "done"
+
+CONTAINER_IP=$(lxc list $container -c 4 --format csv | awk '{print $1}')
+echo "$CONTAINER_IP"
+
+until nc -zvw1 "$CONTAINER_IP" 22; do
+    echo "waiting for 22"
+    sleep 2
+done
+echo "22 open"
