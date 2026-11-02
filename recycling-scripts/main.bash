@@ -20,6 +20,8 @@ recycle_or_reset() {
         echo "recycle failed, deleting \"$container\" so the next loop starts from a fresh container"
         ./delete_container.bash "$container" "$mitmp"
     fi
+    # a recycle request from the watchdog is satisfied by any recycle
+    rm -f "../data/.$container.reset"
 }
 
 # ignore keyboard interrupts
@@ -32,6 +34,8 @@ fi
 
 while true; do
     echo $(date)
+    # progress marker for the watchdog (wait_for_attacker.bash and wait_for_log.bash also touch it)
+    touch "../data/.$container.heartbeat"
 
     # RANDOM is a random integer between 0 and 32767 (2^15 - 1)
     random_number=$((RANDOM))

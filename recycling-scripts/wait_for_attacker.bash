@@ -35,8 +35,16 @@ quit_now() {
   exit 11
 }
 
+# Touched at most every 10 seconds while waiting; the watchdog treats a stale file as a hung loop
+heartbeat_fp="$logfp/.$container.heartbeat"
+last_beat=-10
+
 # Wait up to $1 seconds for a keypress, quit if it is 'q'
 wait_or_quit() {
+  if (( SECONDS - last_beat >= 10 )); then
+    touch "$heartbeat_fp"
+    last_beat=$SECONDS
+  fi
   local key=""
   read -r -t "$1" -n 1 key
   [[ $key == "q" ]] && quit_now
@@ -61,6 +69,12 @@ logins_lines=$(wc -l < "/root/MITM_data/logins/$container.txt")
 locked_since=""
 while (( stored_logins_lines == logins_lines )); do
   logins_lines=$(wc -l < "/root/MITM_data/logins/$container.txt")
+  # the watchdog asks for a recycle (MITM down, or nobody getting in) by creating this file
+  if [[ -f "$logfp/.$container.reset" ]]; then
+    rm -f "$logfp/.$container.reset"
+    echo "[!] Watchdog asked for a recycle; recycling the container"
+    exit 12
+  fi
   # MITM locks the container to an attacker before connecting them to it. If that connection
   # fails, the lock stays and nobody can log in again, so give up (exit 12, main.bash recycles)
   # if a lock is not followed by the attacker getting inside within STUCK_LIMIT seconds

@@ -20,8 +20,16 @@ quit_now() {
   exit 11
 }
 
+# Touched at most every 10 seconds while waiting; the watchdog treats a stale file as a hung loop
+heartbeat_fp="$logfp/.$container.heartbeat"
+last_beat=-10
+
 # Wait up to $1 seconds for a keypress, quit if it is 'q'
 wait_or_quit() {
+  if (( SECONDS - last_beat >= 10 )); then
+    touch "$heartbeat_fp"
+    last_beat=$SECONDS
+  fi
   local key=""
   read -r -t "$1" -n 1 key
   [[ $key == "q" ]] && quit_now
@@ -29,9 +37,14 @@ wait_or_quit() {
 
 trap quit_now INT
 
-# Check if MITM log has been completely recorded
+# Check if MITM log has been completely recorded. Give up after 60 seconds (e.g. MITM died during
+# the session and will never log it) so the loop carries on instead of waiting forever.
 end_of_file=0
 while [[ $end_of_file -eq 0 ]]; do
   end_of_file=$(grep -c "Container's OpenSSH server closed connection" "$logfp/.$container.log")
+  if [[ $end_of_file -eq 0 ]] && (( SECONDS > 60 )); then
+    echo "[!] Warning: MITM never logged the connection closing; continuing without it"
+    break
+  fi
   wait_or_quit 0.1
 done
