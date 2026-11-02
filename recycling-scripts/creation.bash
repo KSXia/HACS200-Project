@@ -44,6 +44,13 @@ if ! ./wait_for_sshd.bash "$container"; then
     exit 1
 fi
 
+# Make sure no other MITM for this container is still running: it would keep the port, and the
+# new one could not start
+if ! ./stop_mitm.bash "$container" "$mitmp"; then
+    echo "not starting MITM: \"$container\" MITM port is still in use"
+    exit 1
+fi
+
 echo -n "starting MITM process.. "
 sudo screen -dmS "$mitmp" bash -c "sudo node /root/honeypots/MITM/mitm/index.js $mitmconf 2>&1 | tee $logfp/.$container.log"
 # sudo screen -L -Logfile "$logfp/.$container.logins" -dmS "$container-logins" tail -F -n 0 "/root/MITM_data/logins/$container.txt"

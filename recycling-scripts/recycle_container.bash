@@ -17,11 +17,7 @@ mitmp="$2"
 echo "recycling container \"$container\""
 
 # Stop MITM first so no attacker reaches the old (locked) MITM while the container is reset
-echo -n "stopping mitmp.. "
-sudo screen -S "$mitmp" -X quit > /dev/null
-# sudo screen -S "$container-logins" -X quit
-# sudo screen -S "$container-attempts" -X quit
-echo "done"
+./stop_mitm.bash "$container" "$mitmp"
 
 # lxc stop waits forever by default, so force the stop if it takes more than 30 seconds
 echo -n "stopping container.. "
