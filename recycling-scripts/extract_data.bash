@@ -27,6 +27,14 @@ echo "    mitml fp \"$mitml_fp\""
 echo "    output fp \"$output_fp\""
 
 session=$(sudo tail -n 1 $mitmd_fp/logins/$container.txt | sed 's/.*;//g')
+
+cat "$mitmd_fp/logins/$container.txt" >> "$mitmd_fp/logins/$container.txt.archive"
+mv "$mitmd_fp/logins/$container.txt" "$output_fp/logins.txt"
+touch "$mitmd_fp/logins/$container.txt"
+cat "$mitmd_fp/login_attempts/$container.txt" >> "$mitmd_fp/login_attempts/$container.txt"
+mv "$mitmd_fp/login_attempts/$container.txt" "$output_fp/login_attempts.txt"
+touch "$mitmd_fp/login_attempts/$container.txt"
+
 echo "    session ID is $session"
 sudo cp "$mitmd_fp/sessions/$session.gz" $output_fp/session.log.gz
 
@@ -38,7 +46,3 @@ else
     echo "    leave reason file \"$leave_reason_fp\" not found, recording unknown"
     echo "unknown" > "$output_fp/leave_reason"
 fi
-
-mv "$logins_fp" "$output_fp/logins.txt"
-mv "$attempts_fp" "$output_fp/login_attempts.txt"
-
