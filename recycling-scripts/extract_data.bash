@@ -31,7 +31,7 @@ session=$(sudo tail -n 1 $mitmd_fp/logins/$container.txt | sed 's/.*;//g')
 cat "$mitmd_fp/logins/$container.txt" >> "$mitmd_fp/logins/$container.txt.archive"
 mv "$mitmd_fp/logins/$container.txt" "$output_fp/logins.txt"
 touch "$mitmd_fp/logins/$container.txt"
-cat "$mitmd_fp/login_attempts/$container.txt" >> "$mitmd_fp/login_attempts/$container.txt"
+cat "$mitmd_fp/login_attempts/$container.txt" >> "$mitmd_fp/login_attempts/$container.txt.archive"
 mv "$mitmd_fp/login_attempts/$container.txt" "$output_fp/login_attempts.txt"
 touch "$mitmd_fp/login_attempts/$container.txt"
 
