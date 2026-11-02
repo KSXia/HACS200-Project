@@ -56,7 +56,7 @@ today=$(date +%Y-%m-%d)
 yesterday=$(date -d yesterday +%Y-%m-%d)
 
 # \n is written literally so it is a newline inside the JSON string
-text="Honeypot session report\n$(day_line Yesterday "$yesterday")\n$(day_line Today "$today")"
+text="Honeypot session report $(date)\n$(day_line Yesterday "$yesterday")\n$(day_line Today "$today")"
 payload="{\"text\": \"$text\"}"
 
 if [[ "$DRY_RUN" == "1" ]]; then
