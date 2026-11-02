@@ -23,6 +23,8 @@ if lxc info "$container" &>/dev/null; then
 fi
 
 while true; do
+    echo $(date)
+
     # RANDOM is a random integer between 0 and 32767 (2^15 - 1)
     random_number=$((RANDOM))
     # modulo by the number of treatments to create a bounded index
