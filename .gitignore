@@ -5,3 +5,4 @@ data/.*
 .slack_webhook
 data/main-*
 recycling-scripts/.*
+monitoring-scripts/*.log
