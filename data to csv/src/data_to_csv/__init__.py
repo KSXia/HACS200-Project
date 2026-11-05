@@ -16,6 +16,7 @@ def parse_sessions(base_dir, output_file):
         logins_file = session_dir / "logins.txt"
         mitm_file = session_dir / "mitm.log"
         leave_file = session_dir / "leave_reason"
+        container = str(session_dir.parent.parent.name)
 
         if config_file.exists() and logins_file.exists() and mitm_file.exists():
             with open(logins_file, "r", errors="ignore") as f:
@@ -76,13 +77,14 @@ def parse_sessions(base_dir, output_file):
             if duration >= 300:
                 continue
 
-            rows.append((login_time, ip, config, duration, commands, leave_reason))
+            print(container)
+            rows.append((login_time, container, ip, config, duration, commands, leave_reason))
 
     rows.sort(key=lambda x: x[0])
 
     with open(output_file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
-        writer.writerow(["ip", "config", "duration", "commands", "leave_reason"])
+        writer.writerow(["container", "ip", "config", "duration", "commands", "leave_reason"])
         for r in rows:
             writer.writerow(r[1:])
 
@@ -91,4 +93,6 @@ def parse_sessions(base_dir, output_file):
 
 
 def main() -> None:
-    parse_sessions("data_3nov", "honeypot_data_3nov.csv")
+    parse_sessions("data_4nov", "honeypot_data_4nov.csv")
+    
+main()
