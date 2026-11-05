@@ -59,7 +59,9 @@ def parse_sessions(base_dir, output_file):
                         or "Noninteractive mode attacker command" in line
                         or "Attacker closed connection" in line
                     ):
-                        commands += 1
+                        if "Attacker closed connection" not in line:
+                            commands += 1
+        
                         ts_str = line.split(" - ")[0].strip()
                         try:
                             last_cmd_time = datetime.strptime(
@@ -77,7 +79,6 @@ def parse_sessions(base_dir, output_file):
             if duration >= 300:
                 continue
 
-            print(container)
             rows.append((login_time, container, ip, config, duration, commands, leave_reason))
 
     rows.sort(key=lambda x: x[0])
