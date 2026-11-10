@@ -19,14 +19,12 @@ echo "recycling container \"$container\""
 # Stop MITM first so no attacker reaches the old (locked) MITM while the container is reset
 ./stop_mitm.bash "$container" "$mitmp"
 
-# lxc stop waits forever by default, so force the stop if it takes more than 30 seconds
+# Force the stop: a clean shutdown takes about 20 seconds, and nothing on the container's disk
+# needs saving because the snapshot restore below replaces it anyway
 echo -n "stopping container.. "
-if ! lxc stop "$container" --timeout 30 > /dev/null 2>&1; then
-    echo -n "timed out, forcing.. "
-    if ! lxc stop "$container" --force > /dev/null; then
-        echo "failed"
-        exit 1
-    fi
+if ! lxc stop "$container" --force > /dev/null; then
+    echo "failed"
+    exit 1
 fi
 echo "done"
 
