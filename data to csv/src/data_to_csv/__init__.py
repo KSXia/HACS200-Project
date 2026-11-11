@@ -1,7 +1,116 @@
 import csv
+import re
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+
+# Anchored to MITM's own log prefix so text an attacker typed can't look like one of these lines
+LOG_PREFIX = r"^\S+ \S+ - (?:\[[^\]]+\] )*"
+COMMAND_LINE = re.compile(
+    LOG_PREFIX
+    + r"[^:]*?(?:line from reader|Non-interactive command|Noninteractive mode attacker command): ?(.*)$"
+)
+CLOSED_LINE = re.compile(LOG_PREFIX + r"Attacker closed connection\s*$")
+
+# Shell words that only give structure to a command list and aren't commands themselves
+SHELL_KEYWORDS = {"do", "done", "then", "else", "fi", "esac", "!"}
+
+
+def split_commands(command_line):
+    """Split a shell line into its separate commands.
+
+    Splits on ; && || | |& & and newlines, but only outside quotes, $(...), `...`, ${...},
+    and [[ ... ]]. A comment ends the line. Redirections like 2>&1, &>file and >|file don't split.
+    """
+    segments = []
+    current = []
+    stack = []  # quotes and substitutions that are still open
+    i = 0
+    n = len(command_line)
+
+    def end_segment():
+        segments.append("".join(current))
+        current.clear()
+
+    while i < n:
+        c = command_line[i]
+        top = stack[-1] if stack else None
+        two = command_line[i : i + 2]
+
+        if c == "\\":
+            current.append(command_line[i : i + 2])
+            i += 2
+        elif c == "'" and top != '"':
+            end = command_line.find("'", i + 1)
+            end = n if end == -1 else end + 1
+            current.append(command_line[i:end])
+            i = end
+        elif c in ('"', "`"):
+            if top == c:
+                stack.pop()
+            else:
+                stack.append(c)
+            current.append(c)
+            i += 1
+        elif two in ("$(", "${"):
+            stack.append(two)
+            current.append(two)
+            i += 2
+        elif top == '"':
+            current.append(c)
+            i += 1
+        elif c == "(" and stack:
+            stack.append("(")
+            current.append(c)
+            i += 1
+        elif c == ")" and top in ("$(", "("):
+            stack.pop()
+            current.append(c)
+            i += 1
+        elif c == "}" and top == "${":
+            stack.pop()
+            current.append(c)
+            i += 1
+        elif two == "]]" and top == "[[":
+            stack.pop()
+            current.append(two)
+            i += 2
+        elif stack:
+            current.append(c)
+            i += 1
+        elif two == "[[" and (i == 0 or command_line[i - 1] in " \t;&|("):
+            stack.append("[[")
+            current.append(two)
+            i += 2
+        elif c == "#" and (i == 0 or command_line[i - 1] in " \t;&|()"):
+            break
+        elif c in ";\n\r":
+            end_segment()
+            i += 1
+        elif two in ("&&", "||", "|&"):
+            end_segment()
+            i += 2
+        elif c == "|" and command_line[i - 1 : i] != ">":
+            end_segment()
+            i += 1
+        elif c == "&" and command_line[i - 1 : i] not in ("<", ">") and command_line[i + 1 : i + 2] != ">":
+            end_segment()
+            i += 1
+        else:
+            current.append(c)
+            i += 1
+
+    end_segment()
+    return [segment.strip() for segment in segments if _is_command(segment)]
+
+
+def _is_command(segment):
+    words = [word.strip("(){}") for word in segment.split()]
+    return any(word and word not in SHELL_KEYWORDS for word in words)
+
+
+def count_commands(command_line):
+    return len(split_commands(command_line))
 
 
 def parse_sessions(base_dir, output_file):
@@ -53,15 +162,11 @@ def parse_sessions(base_dir, output_file):
 
             with open(mitm_file, "r", errors="ignore") as f:
                 for line in f:
-                    if (
-                        "line from reader:" in line
-                        or "Non-interactive command:" in line
-                        or "Noninteractive mode attacker command" in line
-                        or "Attacker closed connection" in line
-                    ):
-                        if "Attacker closed connection" not in line:
-                            commands += 1
-        
+                    command = COMMAND_LINE.match(line)
+                    if command or CLOSED_LINE.match(line):
+                        if command:
+                            commands += count_commands(command.group(1))
+
                         ts_str = line.split(" - ")[0].strip()
                         try:
                             last_cmd_time = datetime.strptime(
